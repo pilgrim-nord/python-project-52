@@ -8,7 +8,7 @@ render-start:
 	gunicorn task_manager.wsgi
 
 migrate:
-    python manage.py migrate
+	python manage.py migrate
 
 collectstatic:
 	python manage.py collectstatic --noinput
