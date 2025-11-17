@@ -1,3 +1,6 @@
+install:
+		uv sync
+
 build:
 	./build.sh
 
