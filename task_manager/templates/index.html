@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load i18n %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-12">
+            <div class="card mx-auto" style="max-width: 80rem; background-color: #e6e6fa;">
+                <div class="card-body p-5">
+                    <h1 class="display-4 mb-4">Привет от Хекслета!</h1>
+                    <p class="lead mb-4">Практические курсы по программированию</p>
+                    <hr>
+                    <a class="btn btn-primary btn-lg" href="https://ru.hexlet.io/">{% trans "Узнать больше" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

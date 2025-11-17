@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Manager{% endblock %}</title>
+    {% load django_bootstrap5 %}
+    {% load i18n %}
+    {% bootstrap_css %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg rounded mx-2 mt-1 shadow-sm" style="background-color: #e6e6fa;">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-dark" href="/">{% trans "Менеджер задач" %}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+              data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" 
+              aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">{% trans "Пользователи" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">{% trans "Вход" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">{% trans "Регистрация" %}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+       {% bootstrap_messages %}
+    </div>
+    
+    <div class="container-fluid flex-grow-1">
+    {% block content %}{% endblock %}    
+    </div>
+    
+    <footer>
+      <div class="container my-5 pt-4 border-top">
+        <a target="_blank" href="https://ru.hexlet.io">Hexlet</a>
+      </div>
+    </footer> 
+
+    {% bootstrap_javascript %}
+</body>
+</html>
