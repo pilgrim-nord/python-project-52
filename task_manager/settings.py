@@ -30,7 +30,17 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'webserver',
+    'check.hexlet.io',                           # обязательно для новых проверок
+    'python-project-52-nw7g.onrender.com',       # твой домен
+]
+
+# Динамически добавляем домен Render, если он есть
+if os.getenv('RENDER_EXTERNAL_HOSTNAME'):
+    ALLOWED_HOSTS.append(os.getenv('RENDER_EXTERNAL_HOSTNAME'))
 
 
 # Application definition
