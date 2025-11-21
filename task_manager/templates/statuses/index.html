@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Статусы{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Статусы</h1>
+    <a href="{% url 'create_status' %}" class="btn btn-primary">Создать статус</a>
+  </div>
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Имя</th>
+        <th scope="col">Создана</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for status in object_list %}
+        <tr>
+          <th scope="row">{{ status.id }}</th>
+          <td>{{ status.name }}</td>
+          <td>{{ status.created_at|date:"d.m.Y" }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3">Статусов пока нет.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

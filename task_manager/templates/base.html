@@ -1,52 +1,72 @@
+<!-- task_manager/templates/base.html -->
+{% load django_bootstrap5 %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Task Manager{% endblock %}</title>
-    {% load django_bootstrap5 %}
-    {% load i18n %}
+    <title>{% block title %}Менеджер задач{% endblock %}</title>
     {% bootstrap_css %}
+    <style>
+        /* Небольшое дополнение для лучшего вида */
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1; }
+    </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
-    <nav class="navbar navbar-expand-lg rounded mx-2 mt-1 shadow-sm" style="background-color: #e6e6fa;">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-dark" href="/">{% trans "Менеджер задач" %}</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-              data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" 
-              aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'statuses' %}">Менеджер задач</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Пользователи</a>
+                        </li>
 
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">{% trans "Пользователи" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">{% trans "Вход" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">{% trans "Регистрация" %}</a>
-                    </li>
-                </ul>
+                        <!-- Исправление: переменная login не передаётся в контекст, нужно использовать is_authenticated -->
+                        {% if not user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Вход</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signup' %}">Регистрация</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'statuses' %}">Статусы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Метки</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Задачи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Выход</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <div class="container mt-3">
-       {% bootstrap_messages %}
-    </div>
-    
-    <div class="container-fluid flex-grow-1">
-    {% block content %}{% endblock %}    
-    </div>
-    
-    <footer>
-      <div class="container my-5 pt-4 border-top">
-        <a target="_blank" href="https://ru.hexlet.io">Hexlet</a>
-      </div>
-    </footer> 
+    <main class="container mt-4">
+        <!-- Блок для вывода сообщений (успех, ошибка и т.д.) -->
+        {% bootstrap_messages %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-light text-center text-lg-start mt-auto">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2024
+        </div>
+    </footer>
 
     {% bootstrap_javascript %}
 </body>
