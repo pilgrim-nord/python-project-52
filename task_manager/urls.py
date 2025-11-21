@@ -23,8 +23,7 @@ from task_manager.views import IndexView
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('admin/', admin.site.urls),
-    path('statuses/', views.StatusListView.as_view(), name='statuses'),
-    path('statuses/create/', views.StatusCreateView.as_view(), name='create_status'),
+
     path('login/', IndexView.as_view(), name='login'),
-path('signup/', IndexView.as_view(), name='signup'),
+    path('signup/', IndexView.as_view(), name='signup'),
 ]
