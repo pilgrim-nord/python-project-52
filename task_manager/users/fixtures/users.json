@@ -1,0 +1,33 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "testuser1",
+      "first_name": "Иван",
+      "last_name": "Иванов",
+      "email": "ivan@example.com",
+      "password": "pbkdf2_sha256$600000$test$test",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "testuser2",
+      "first_name": "Петр",
+      "last_name": "Петров",
+      "email": "petr@example.com",
+      "password": "pbkdf2_sha256$600000$test$test",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2024-01-02T00:00:00Z"
+    }
+  }
+]
+
