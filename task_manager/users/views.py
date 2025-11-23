@@ -4,7 +4,6 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from .forms import UserRegistrationForm, UserUpdateForm
 
-# 1. GET /users/ — страница со списком всех пользователей
 class UserListView(ListView):
     model = User
     template_name = 'users/user_list.html'
@@ -17,7 +16,7 @@ class UserCreateView(CreateView):
     model = User
     form_class = UserRegistrationForm
     template_name = 'users/user_form.html'
-    success_url = reverse_lazy('login') # После регистрации перенаправляем на страницу входа
+    success_url = reverse_lazy('users:login') # После регистрации перенаправляем на страницу входа
 
 # 4. GET /users/<int:pk>/update/ — страница редактирования
 # 5. POST /users/<int:pk>/update/ — обновление пользователя

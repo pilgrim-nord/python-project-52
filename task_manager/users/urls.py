@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from ..views import CustomLoginView
 
 app_name = 'users'
 urlpatterns = [
@@ -13,6 +14,13 @@ urlpatterns = [
 
     # Удаление пользователя
     path('<int:pk>/delete/', views.UserDeleteView.as_view(), name='delete'),
+    path(
+        "login/",
+        CustomLoginView.as_view(
+            template_name="registration/login.html"
+        ),
+        name="login"
+    ),
 
-    path('', include('django.contrib.auth.urls')),
+    # path('', include('django.contrib.auth.urls')),
 ]

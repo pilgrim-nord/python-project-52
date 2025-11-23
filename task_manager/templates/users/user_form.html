@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
 
-</body>
-</html>
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="mb-4">{% if form.instance.pk %}Редактирование пользователя{% else %}Регистрация{% endif %}</h1>
+            <form method="post">
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        {% if form.instance.pk %}Сохранить изменения{% else %}Зарегистрировать{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

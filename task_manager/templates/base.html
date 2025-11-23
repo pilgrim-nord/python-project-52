@@ -11,27 +11,50 @@
 <body class="d-flex flex-column min-vh-100">
     <nav class="navbar navbar-expand-lg rounded mx-2 mt-1 shadow-sm" style="background-color: #e6e6e6;">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-dark" href="/">{% trans "Менеджер задач" %}</a>
+            <a class="navbar-brand fw-bold text-dark" href="{% url 'index' %}">Менеджер задач</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
               data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02"
               aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+             <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/users/">{% trans "Пользователи" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/users/">{% trans "Вход" %}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/users/">{% trans "Регистрация" %}</a>
-                    </li>
-
+                    {% if user.is_authenticated %}
+                        <!-- Меню для ЗАЛОГИНЕННЫХ пользователей -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:list' %}">Пользователи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'statuses:list' %}">Статусы</a>
+                        </li>
+                        {% comment %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'labels:list' %}">Метки</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tasks:list' %}">Задачи</a>
+                        </li>
+                        {% endcomment %}
+                        <li class="nav-item">
+                            <form class="d-inline" action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link">Выход</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <!-- Меню для НЕ ЗАЛОГИНЕННЫХ (анонимных) пользователей -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:list' %}">Пользователи</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:create' %}">Регистрация</a>
+                        </li>
+                    {% endif %}
                 </ul>
-
             </div>
         </div>
     </nav>
