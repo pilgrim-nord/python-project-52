@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Удаление метки" %}{% endblock %}
+
+{% block content %}
+    <div class="alert alert-warning" role="alert">
+        <h1 class="alert-heading">{% trans "Удаление метки" %}</h1>
+        <p>{% trans "Вы уверены, что хотите удалить" %} <strong>{{ object.name }}</strong>?</p>
+        <hr>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans "Да, удалить" %}</button>
+            <a href="{% url 'labels:list' %}" class="btn btn-secondary">{% trans "Отмена" %}</a>
+        </form>
+    </div>
+{% endblock %}

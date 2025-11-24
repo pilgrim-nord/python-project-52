@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Просмотр задачи" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Просмотр задачи" %}</h1>
+    
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ task.name }}</h5>
+            <p class="card-text"><strong>{% trans "Описание" %}:</strong> {{ task.description|default:"Нет описания" }}</p>
+            <p class="card-text"><strong>{% trans "Статус" %}:</strong> <span class="badge bg-secondary">{{ task.status.name }}</span></p>
+            <p class="card-text"><strong>{% trans "Автор" %}:</strong> {{ task.author.username }}</p>
+            <p class="card-text"><strong>{% trans "Исполнитель" %}:</strong> {{ task.executor.username|default:"Не назначен" }}</p>
+            <p class="card-text">
+                <strong>{% trans "Метки" %}:</strong>
+                {% for label in task.labels.all %}
+                    <span class="badge bg-info text-dark">{{ label.name }}</span>
+                {% empty %}
+                    <span class="text-muted">{% trans "Нет меток" %}</span>
+                {% endfor %}
+            </p>
+            <p class="card-text"><small class="text-muted">{% trans "Дата создания" %}: {{ task.created_at|date:"d.m.Y H:i" }}</small></p>
+        </div>
+    </div>
+    
+    <a href="{% url 'tasks:list' %}" class="btn btn-secondary mt-3">{% trans "Назад" %}</a>
+{% endblock %}

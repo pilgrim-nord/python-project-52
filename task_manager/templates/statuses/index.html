@@ -25,9 +25,13 @@
           <td>{{ status.id }}</td>
           <td>{{ status.name }}</td>
           <td>{{ status.created_at|date:"d.m.Y H:i" }}</td>
+{#          <td>#}
+{#            <a href="{% url 'statuses:update' status.pk %}" class="btn btn-link btn-sm">Изменить</a>#}
+{#            <a href="{% url 'statuses:delete' status.pk %}" class="btn btn-link btn-sm">Удалить</a>#}
+{#          </td>#}
           <td>
-            <a href="{% url 'statuses:update' status.pk %}" class="btn btn-link btn-sm">Изменить</a>
-            <a href="{% url 'statuses:delete' status.pk %}" class="btn btn-link btn-sm">Удалить</a>
+            <div><a href="{% url 'statuses:update' status.pk %}">Изменить</a></div>
+            <div><a href="{% url 'statuses:delete' status.pk %}">Удалить</a></div>
           </td>
         </tr>
       {% empty %}

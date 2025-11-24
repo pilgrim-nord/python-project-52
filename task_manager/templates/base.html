@@ -28,14 +28,13 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'statuses:list' %}">Статусы</a>
                         </li>
-                        {% comment %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'labels:list' %}">Метки</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'tasks:list' %}">Задачи</a>
                         </li>
-                        {% endcomment %}
+
                         <li class="nav-item">
                             <form class="d-inline" action="{% url 'logout' %}" method="post">
                                 {% csrf_token %}
