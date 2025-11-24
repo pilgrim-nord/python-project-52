@@ -25,7 +25,7 @@ class UserRegistrationForm(UserCreationForm):
             'required': 'Обязательное поле.',
         }
     )
-    
+
     class Meta:
         model = User
         fields = ("first_name", "last_name", "username", "password1", "password2")

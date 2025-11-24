@@ -15,6 +15,8 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
+import task_manager.statuses.apps
+
 load_dotenv()
 
 
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'task_manager',
     'task_manager.users.apps.UsersConfig',
+    'task_manager.statuses.apps.StatusesConfig'
 ]
 
 MIDDLEWARE = [

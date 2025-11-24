@@ -1,21 +1,22 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
 
-{% block title %}Создание статуса{% endblock %}
+{% block title %}Изменение статуса{% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <h1 class="mb-4">Создание статуса</h1>
+      <h1 class="mb-4">Изменение статуса</h1>
       <form method="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         <div class="form-group mt-3">
-          <button type="submit" class="btn btn-primary">Создать</button>
+          <button type="submit" class="btn btn-primary">Изменить</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 {% endblock %}
+

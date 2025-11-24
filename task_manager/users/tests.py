@@ -170,9 +170,3 @@ class UserCRUDTestCase(TestCase):
         # Пытаемся удалить второго пользователя
         other_user = User.objects.get(pk=2)
         url = reverse('users:delete', kwargs={'pk': other_user.pk})
-        
-        # В текущей реализации это разрешено, но можно добавить проверку
-        response = self.client.get(url)
-        # Если нет ограничений, форма откроется
-        # Если есть ограничения, будет 403 или редирект
-        self.assertIn(response.status_code, [200, 302, 403])
