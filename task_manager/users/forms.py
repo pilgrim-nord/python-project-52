@@ -63,6 +63,16 @@ class UserRegistrationForm(UserCreationForm):
                 'class': 'form-control',
             }),
         }
+
+    def __init__(self, *args, **kwargs):
+        # 1. Сначала вызываем родительский конструктор
+        super().__init__(*args, **kwargs)
+
+        # 2. Затем переопределяем help_text для нужных полей
+        self.fields[
+            'username'].help_text = 'Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_.'
+        self.fields['password1'].help_text = 'Ваш пароль должен содержать как минимум 3 символа.'
+        self.fields['password2'].help_text = 'Для подтверждения введите, пожалуйста, пароль ещё раз.'
     
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -80,8 +90,20 @@ class UserRegistrationForm(UserCreationForm):
         return user
 
 
-class UserUpdateForm(UserChangeForm):
-    password = None  # Скрываем поле пароля
+class UserUpdateForm(forms.ModelForm):
+    # Добавляем поля пароля (необязательные)
+    password1 = forms.CharField(
+        label='Новый пароль',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False,
+        help_text='Оставьте пустым, если не хотите менять пароль. Минимум 3 символа.',
+    )
+    password2 = forms.CharField(
+        label='Подтверждение нового пароля',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        required=False,
+        help_text='Повторите пароль для подтверждения.',
+    )
 
     class Meta:
         model = User
@@ -93,20 +115,35 @@ class UserUpdateForm(UserChangeForm):
             'email': 'Email',
         }
         widgets = {
-            'username': forms.TextInput(attrs={
-                'placeholder': 'Имя пользователя',
-                'class': 'form-control',
-            }),
-            'first_name': forms.TextInput(attrs={
-                'placeholder': 'Ваше имя',
-                'class': 'form-control',
-            }),
-            'last_name': forms.TextInput(attrs={
-                'placeholder': 'Ваша фамилия',
-                'class': 'form-control',
-            }),
-            'email': forms.EmailInput(attrs={
-                'placeholder': 'Email',
-                'class': 'form-control',
-            }),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+
+        if password1 or password2:
+            if not password1:
+                raise ValidationError({'password1': 'Это поле обязательно, если вы меняете пароль.'})
+            if not password2:
+                raise ValidationError({'password2': 'Это поле обязательно, если вы меняете пароль.'})
+            if password1 != password2:
+                raise ValidationError('Пароли не совпадают.')
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+
+        # Обновляем пароль, только если он указан
+        password1 = self.cleaned_data.get('password1')
+        if password1:
+            user.set_password(password1)
+
+        if commit:
+            user.save()
+        return user
