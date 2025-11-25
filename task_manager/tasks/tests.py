@@ -1,6 +1,6 @@
 # tasks/tests.py
 
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db import IntegrityError

@@ -15,7 +15,6 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
-import task_manager.statuses.apps
 
 load_dotenv()
 

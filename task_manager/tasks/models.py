@@ -2,7 +2,6 @@ from django.db import models
 
 # tasks/models.py
 
-from django.db import models
 from django.contrib.auth.models import User
 
 class Task(models.Model):
