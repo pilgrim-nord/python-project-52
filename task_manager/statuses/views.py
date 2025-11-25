@@ -13,7 +13,7 @@ STATUSES_LIST_URL = reverse_lazy('statuses:list')
 
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
-    template_name = 'statuses/index.html'
+    template_name = 'statuses/list.html'
     context_object_name = 'statuses'
     ordering = ['id']
 

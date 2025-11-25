@@ -4,26 +4,60 @@
 {% block title %}{% trans "Просмотр задачи" %}{% endblock %}
 
 {% block content %}
+<div class="container my-4">
     <h1>{% trans "Просмотр задачи" %}</h1>
     
     <div class="card mt-3">
+        <div class="card-header bg-secondary text-white">
+            <h3 class="mb-0">{{ task.name }}</h3>
+        </div>
         <div class="card-body">
-            <h5 class="card-title">{{ task.name }}</h5>
-            <p class="card-text"><strong>{% trans "Описание" %}:</strong> {{ task.description|default:"Нет описания" }}</p>
-            <p class="card-text"><strong>{% trans "Статус" %}:</strong> <span class="badge bg-secondary">{{ task.status.name }}</span></p>
-            <p class="card-text"><strong>{% trans "Автор" %}:</strong> {{ task.author.username }}</p>
-            <p class="card-text"><strong>{% trans "Исполнитель" %}:</strong> {{ task.executor.username|default:"Не назначен" }}</p>
-            <p class="card-text">
-                <strong>{% trans "Метки" %}:</strong>
-                {% for label in task.labels.all %}
-                    <span class="badge bg-info text-dark">{{ label.name }}</span>
-                {% empty %}
-                    <span class="text-muted">{% trans "Нет меток" %}</span>
-                {% endfor %}
-            </p>
-            <p class="card-text"><small class="text-muted">{% trans "Дата создания" %}: {{ task.created_at|date:"d.m.Y H:i" }}</small></p>
+            <div class="row mb-2">
+                <div class="col-3">{{ task.description|default:"Нет описания" }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">{% trans "Автор" %}</div>
+                <div class="col-9">{{ task.author.username }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">{% trans "Исполнитель" %}:</div>
+                <div class="col-9">{{ task.executor.username|default:"Не назначен" }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-3">{% trans "Статус" %}:</div>
+                <div class="col-9">{{ task.status.name }}</div>
+            </div>
+            <div class="row">
+                <div class="col-3">{% trans "Дата создания" %}</div>
+                <div class="col-9"><small class="text-muted">{{ task.created_at|date:"d.m.Y H:i" }}</small></div>
+            </div>
+            <div class="row mb-2">
+                <!-- Эта колонка теперь занимает всю ширину -->
+                <div class="col-12">
+                    <div class="font-weight-bold">{% trans "Метки" %}:</div>
+                    <!-- Добавляем вложенный div с отступом для списка -->
+                    <div class="ml-3">
+                        {% if task.labels.all %}
+                            <ul class="mb-0">
+                                {% for label in task.labels.all %}
+                                    <li>{{ label.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <span class="text-muted">{% trans "Нет меток" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-footer">
+            {% if user.is_authenticated %}
+                <a href="{% url 'tasks:update' task.pk %}">{% trans "Изменить" %}</a>
+                <br>
+                <a href="{% url 'tasks:delete' task.pk %}">{% trans "Удалить" %}</a>
+            {% endif %}
         </div>
     </div>
-    
-    <a href="{% url 'tasks:list' %}" class="btn btn-secondary mt-3">{% trans "Назад" %}</a>
+</div>
 {% endblock %}
