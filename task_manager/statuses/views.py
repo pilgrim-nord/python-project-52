@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -34,27 +35,19 @@ class StatusUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = _('Статус успешно изменён')
 
 
-class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class StatusDeleteView(LoginRequiredMixin, DeleteView):
     model = Status
     template_name = 'statuses/delete.html'
     success_url = STATUSES_LIST_URL
-    success_message = _('Статус успешно удалён')
 
-    def post(self, request, *args, **kwargs):
-        status = self.get_object()
+    def form_valid(self, form):
         # Проверяем, используется ли статус в задачах
-        # Пока задач нет, но подготовим проверку
-        try:
-            # Попытка импортировать Task, если приложение существует
-            from task_manager.tasks.models import Task
-            if Task.objects.filter(status=status).exists():
-                messages.error(
-                    request,
-                    _('Невозможно удалить статус, потому что он используется')
-                )
-                return self.get(request, *args, **kwargs)
-        except ImportError:
-            # Если модель Task еще не существует, просто удаляем
-            pass
-        
-        return super().post(request, *args, **kwargs)
+        if self.get_object().task_set.exists():
+            messages.error(
+                self.request,
+                _('Невозможно удалить статус, потому что он используется')
+            )
+            return redirect(self.success_url)
+
+        messages.success(self.request, _('Статус успешно удалён'))
+        return super().form_valid(form)
