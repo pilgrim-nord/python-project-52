@@ -1,25 +1,22 @@
 {% extends 'base.html' %}
+{% load django_bootstrap5 %}
 {% load i18n %}
 
-{% block title %}{% trans "Задачи" %}{% endblock %}
-
 {% block content %}
-    <!-- ИЗМЕНЕНО: Заголовок и кнопка теперь друг под другом -->
+<div class="container my-4">
     <h1>{% trans "Задачи" %}</h1>
     {% if user.is_authenticated %}
         <a href="{% url 'tasks:create' %}" class="btn btn-primary mt-2">{% trans "Создать задачу" %}</a>
     {% endif %}
 
-    <!-- ИЗМЕНЕНО: Форма фильтрации с серым фоном -->
     <div class="card mt-4">
         <div class="card-body bg-light">
             <form method="GET" action="{% url 'tasks:list' %}">
                 <div class="row g-3">
-                    <!-- Фильтр по статусу -->
                     <div class="col-12">
                         <label for="status" class="form-label">{% trans "Статус" %}</label>
                         <select name="status" id="status" class="form-select">
-                            <option value="">{% trans "Все статусы" %}</option>
+                            <option value="">{% trans "---------" %}</option>
                             {% for status in statuses %}
                                 <option value="{{ status.id }}" {% if status.id|stringformat:"s" == status_filter %}selected{% endif %}>
                                     {{ status.name }}
@@ -28,11 +25,10 @@
                         </select>
                     </div>
 
-                    <!-- Фильтр по исполнителю -->
                     <div class="col-12">
                         <label for="executor" class="form-label">{% trans "Исполнитель" %}</label>
                         <select name="executor" id="executor" class="form-select">
-                            <option value="">{% trans "Все исполнители" %}</option>
+                            <option value="">{% trans "---------" %}</option>
                             {% for executor in executors %}
                                 <option value="{{ executor.id }}" {% if executor.id|stringformat:"s" == executor_filter %}selected{% endif %}>
                                     {{ executor.username }}
@@ -41,11 +37,10 @@
                         </select>
                     </div>
 
-                    <!-- Фильтр по метке -->
                     <div class="col-12">
                         <label for="label" class="form-label">{% trans "Метка" %}</label>
                         <select name="label" id="label" class="form-select">
-                            <option value="">{% trans "Все метки" %}</option>
+                            <option value="">{% trans "---------" %}</option>
                             {% for label in labels %}
                                 <option value="{{ label.id }}" {% if label.id|stringformat:"s" == label_filter %}selected{% endif %}>
                                     {{ label.name }}
@@ -54,7 +49,6 @@
                         </select>
                     </div>
 
-                    <!-- Чекбокс -->
                     <div class="col-12">
                         <div class="form-check">
                             <input name="self_tasks" class="form-check-input" type="checkbox" id="self_tasks" {% if is_self_tasks %}checked{% endif %}>
@@ -64,7 +58,6 @@
                         </div>
                     </div>
 
-                    <!-- Кнопка -->
                     <div class="col-12">
                         <button type="submit" class="btn btn-secondary">{% trans "Показать" %}</button>
                     </div>
@@ -73,43 +66,41 @@
         </div>
     </div>
 
-    <!-- ИЗМЕНЕНО: Таблица без столбца "Метки" -->
-    <table class="table table-striped table-bordered mt-4">
-        <thead class="table-light">
+    <table class="table table-striped table-hover align-middle mt-4">
+        <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">{% trans "Имя" %}</th>
-                <th scope="col">{% trans "Статус" %}</th>
-                <th scope="col">{% trans "Автор" %}</th>
-                <th scope="col">{% trans "Исполнитель" %}</th>
-                <!-- УБРАН: <th scope="col">{% trans "Метки" %}</th> -->
-                <th scope="col">{% trans "Создана" %}</th>
-                <th scope="col">{% trans "Действия" %}</th>
+                <th>ID</th>
+                <th>{% trans "Имя" %}</th>
+                <th>{% trans "Статус" %}</th>
+                <th>{% trans "Автор" %}</th>
+                <th>{% trans "Исполнитель" %}</th>
+                <th>{% trans "Создана" %}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             {% for task in tasks %}
             <tr>
-                <th scope="row">{{ task.id }}</th>
+                <td>{{ task.id }}</td>
                 <td><a href="{% url 'tasks:detail' task.pk %}">{{ task.name }}</a></td>
                 <td>{{ task.status.name }}</td>
                 <td>{{ task.author.username }}</td>
                 <td>{{ task.executor.username|default:"-" }}</td>
-                <!-- УБРАН: Весь блок с метками -->
                 <td>{{ task.created_at|date:"d.m.Y" }}</td>
                 <td>
                     {% if user.is_authenticated and user == task.author %}
-                        <div><a href="{% url 'tasks:update' task.pk %}">{% trans "Изменить" %}</a></div>
-                        <div><a href="{% url 'tasks:delete' task.pk %}">{% trans "Удалить" %}</a></div>
+                        <a href="{% url 'tasks:update' task.pk %}">{% trans "Изменить" %}</a>
+                        <br>
+                        <a href="{% url 'tasks:delete' task.pk %}">{% trans "Удалить" %}</a>
                     {% endif %}
                 </td>
             </tr>
             {% empty %}
-            <!-- ИЗМЕНЕНО: colspan уменьшен с 8 до 7 -->
             <tr>
-                <td colspan="7" class="text-center">{% trans "Задач не найдено" %}</td>
+                <td colspan="7" class="text-center text-muted">{% trans "Задач не найдено" %}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% endblock %}
