@@ -102,13 +102,13 @@ class UserCRUDTestCase(TestCase):
         """Тест, что обновление требует авторизации"""
         url = reverse('users:update', kwargs={'pk': self.user.pk})
         
-        # Без авторизации должен быть редирект на страницу входа
+        # Без авторизации должен быть редирект на список пользователей
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/login', response.url)
+        self.assertRedirects(response, reverse('users:list'))
 
     def test_update_other_user_forbidden(self):
-        """Тест, что нельзя обновить другого пользователя (если есть такая логика)"""
+        """Тест, что нельзя обновить другого пользователя"""
         # Логинимся как первый пользователь
         self.client.force_login(self.user)
         
@@ -116,32 +116,23 @@ class UserCRUDTestCase(TestCase):
         other_user = User.objects.get(pk=2)
         url = reverse('users:update', kwargs={'pk': other_user.pk})
         
-        # В текущей реализации это разрешено, но можно добавить проверку
+        # Должен быть редирект на список пользователей
         response = self.client.get(url)
-        # Если нет ограничений, форма откроется
-        # Если есть ограничения, будет 403 или редирект
-        self.assertIn(response.status_code, [200, 302, 403])
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('users:list'))
 
     def test_delete_user(self):
         """Тест удаления пользователя"""
         # Логинимся как пользователь из фикстуры
         self.client.force_login(self.user)
         
-        # Создаем пользователя для удаления
-        user_to_delete = User.objects.create_user(
-            username='todelete',
-            password='testpass123',
-            first_name='Удаляемый',
-            last_name='Пользователь'
-        )
-        user_id = user_to_delete.pk
-        
-        url = reverse('users:delete', kwargs={'pk': user_id})
+        # Пользователь удаляет сам себя
+        url = reverse('users:delete', kwargs={'pk': self.user.pk})
         
         # Проверяем GET запрос - форма подтверждения должна отображаться
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Удаление')
+        self.assertContains(response, 'Подтвердить удаление')
         
         # Проверяем POST запрос - удаление пользователя
         response = self.client.post(url)
@@ -151,22 +142,71 @@ class UserCRUDTestCase(TestCase):
         self.assertRedirects(response, reverse('users:list'))
         
         # Проверяем, что пользователь удален
-        self.assertFalse(User.objects.filter(pk=user_id).exists())
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
 
     def test_delete_user_requires_login(self):
         """Тест, что удаление требует авторизации"""
         url = reverse('users:delete', kwargs={'pk': self.user.pk})
         
-        # Без авторизации должен быть редирект на страницу входа
+        # Без авторизации должен быть редирект на LOGIN_URL
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/login', response.url)
+        self.assertEqual(response.url, '/users/')  # LOGIN_URL
 
     def test_delete_other_user_forbidden(self):
-        """Тест, что нельзя удалить другого пользователя (если есть такая логика)"""
+        """Тест, что нельзя удалить другого пользователя"""
         # Логинимся как первый пользователь
         self.client.force_login(self.user)
         
         # Пытаемся удалить второго пользователя
         other_user = User.objects.get(pk=2)
         url = reverse('users:delete', kwargs={'pk': other_user.pk})
+        
+        # Должен быть редирект на список пользователей с сообщением об ошибке
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('users:list'))
+        
+        # Проверяем, что в сообщениях есть правильный текст ошибки
+        messages = list(response.wsgi_request._messages)
+        error_message_found = any('У вас нет прав для изменения другого пользователя' in str(message) for message in messages)
+        self.assertTrue(error_message_found, "Сообщение об ошибке не найдено")
+        
+        # Проверяем, что пользователь не удален
+        self.assertTrue(User.objects.filter(pk=other_user.pk).exists())
+
+    def test_delete_user_with_tasks_shows_confirmation_then_error(self):
+        """Тест, что форма подтверждения отображается, но после подтверждения показывается ошибка"""
+        # Создаем задачу, где пользователь является автором
+        from task_manager.tasks.models import Task
+        from task_manager.statuses.models import Status
+        
+        # Создаем статус для задачи
+        status = Status.objects.create(name='Тестовый статус')
+        
+        # Создаем задачу, где наш пользователь - автор
+        task = Task.objects.create(
+            name='Тестовая задача',
+            description='Описание',
+            author=self.user,
+            status=status
+        )
+        
+        # Логинимся как пользователь
+        self.client.force_login(self.user)
+        
+        url = reverse('users:delete', kwargs={'pk': self.user.pk})
+        
+        # GET запрос должен показать форму подтверждения
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Подтвердить удаление')
+        self.assertContains(response, 'testuser1')
+        
+        # POST запрос должен показать ошибку и редирект
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('users:list'))
+        
+        # Проверяем, что пользователь не удален
+        self.assertTrue(User.objects.filter(pk=self.user.pk).exists())

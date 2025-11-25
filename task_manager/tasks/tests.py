@@ -5,8 +5,8 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .models import Task
-from statuses.models import Status
-from labels.models import Label
+from task_manager.statuses.models import Status
+from task_manager.labels.models import Label
 
 
 class TaskTests(TestCase):

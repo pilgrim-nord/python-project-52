@@ -68,22 +68,29 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update.html'
     success_url = reverse_lazy('tasks:list')
 
-    def test_func(self):
-        task = self.get_object()
-        return self.request.user == task.author
-
 
 class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
     template_name = 'tasks/delete.html'
-    success_url = reverse_lazy('tasks:index')
+    success_url = reverse_lazy('tasks:list')
 
     def test_func(self):
         task = self.get_object()
         return self.request.user == task.author
+    
+    def handle_no_permission(self):
+        from django.contrib import messages
+        from django.http import HttpResponseRedirect
+        
+        messages.error(
+            self.request, 
+            "Задачу может удалить только ее автор"
+        )
+        # Перенаправляем на список задач вместо поднятия исключения
+        return HttpResponseRedirect(reverse_lazy('tasks:list'))
