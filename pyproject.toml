@@ -11,7 +11,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "rollbar>=1.0",
     "gunicorn>=22.0",
-    "dj-database-url>=3.0.1",
+    "dj-database-url>=2.1 ; sys_platform != 'emscripten'",
 ]
 
 [tool.uv]
