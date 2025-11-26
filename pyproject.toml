@@ -11,6 +11,7 @@ dependencies = [
     "python-dotenv>=1.0",
     "rollbar>=1.0",
     "gunicorn>=22.0",
+    "dj-database-url>=3.0.1",
 ]
 
 [tool.uv]
