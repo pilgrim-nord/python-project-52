@@ -19,3 +19,4 @@ dependencies = [
 dev-dependencies = [
     "ruff>=0.5.0",
 ]
+
