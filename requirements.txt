@@ -1,0 +1,8 @@
+Django>=5.0,<5.2
+psycopg2-binary>=2.9.9
+django-bootstrap5>=23.4
+django-filter>=23.5
+python-dotenv>=1.0
+rollbar>=1.0
+gunicorn>=22.0
+dj-database-url>=2.1
