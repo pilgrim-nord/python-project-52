@@ -4,6 +4,8 @@ import os
 import sys
 
 
+sys.path.insert(0, '/project/.venv/lib/python3.13/site-packages')
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'task_manager.settings')
