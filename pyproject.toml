@@ -1,5 +1,5 @@
 [project]
-name = "task-manager"
+name = "hexlet-code"
 version = "0.1.0"
 description = "Task manager application"
 requires-python = ">=3.11"
