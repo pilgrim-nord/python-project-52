@@ -4,7 +4,15 @@ import os
 import sys
 
 
-sys.path.insert(0, '/project/.venv/lib/python3.13/site-packages')
+if os.path.exists('/project/.venv'):
+    activate_this = '/project/.venv/bin/activate_this.py'
+    if os.path.exists(activate_this):
+        exec(open(activate_this).read(), {'__file__': activate_this})
+else:
+    # Fallback: добавляем стандартный site-packages (для Python 3.13/3.12)
+    site_packages = '/project/.venv/lib/python3.13/site-packages'  # Измени на 3.12, если нужно
+    if os.path.exists(site_packages):
+        sys.path.insert(0, site_packages)
 
 def main():
     """Run administrative tasks."""
