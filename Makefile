@@ -1,5 +1,5 @@
 install:
-		uv sync
+	uv sync
 
 build:
 	./build.sh
@@ -16,5 +16,6 @@ collectstatic:
 lint:
 	uv run ruff check task_manager
 
+# ЭТО РАБОТАЕТ У ВСЕХ СЕГОДНЯ
 start-server:
-	cd code && . /project/.venv/bin/activate && python manage.py runserver 0.0.0.0:3000
+	cd code && uv run --with Django python manage.py runserver 0.0.0.0:3000
