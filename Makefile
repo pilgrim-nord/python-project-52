@@ -15,3 +15,6 @@ collectstatic:
 
 lint:
 	uv run ruff check task_manager
+
+start-server:
+	cd code && uv sync --frozen && python manage.py runserver 0.0.0.0:3000
