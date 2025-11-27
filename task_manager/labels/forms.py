@@ -6,5 +6,5 @@ class LabelForm(forms.ModelForm):
         model = Label
         fields = ['name'] # 'created_at' остается за кадром
         labels = {
-            'name': 'Название',
+            'name': 'Имя',
         }
