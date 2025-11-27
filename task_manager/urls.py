@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, reverse_lazy
+from django.views.generic import RedirectView
 
 from task_manager.views import IndexView, CustomLogoutView
 
@@ -27,4 +28,6 @@ urlpatterns = [
     path('labels/', include('task_manager.labels.urls', namespace='labels')),
     path('statuses/', include('task_manager.statuses.urls', namespace='statuses')),
     # path("logout/", CustomLogoutView.as_view(), name="logout"),
+    path('login/', RedirectView.as_view(url=reverse_lazy('users:login'), permanent=True)),
+    path('logout/', RedirectView.as_view(url=reverse_lazy('users:logout'), permanent=True)),
 ]
