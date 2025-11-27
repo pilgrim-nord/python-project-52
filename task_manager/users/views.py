@@ -11,7 +11,7 @@ from django.contrib import messages
 class AuthRequiredMixin(LoginRequiredMixin):
     def handle_no_permission(self):
         messages.error(self.request, "Вы не авторизованы. Пожалуйста, выполните вход.")
-        return redirect('users:login')
+        return redirect('login')
 
 class UserListView(ListView):
     model = User
@@ -24,7 +24,7 @@ class UserCreateView(CreateView):
     model = User
     form_class = UserRegistrationForm
     template_name = 'users/form.html'
-    success_url = reverse_lazy('users:login')
+    success_url = reverse_lazy('login')
 
 class UserUpdateView(AuthRequiredMixin, UpdateView):
     model = User
@@ -35,7 +35,7 @@ class UserUpdateView(AuthRequiredMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "Вы не авторизованы. Пожалуйста, выполните вход.")
-            return redirect('users:login')
+            return redirect('login')
 
         if request.user.pk != int(kwargs.get('pk', 0)):
             messages.error(request, "У вас нет прав для изменения другого пользователя.")
@@ -51,7 +51,7 @@ class UserDeleteView(AuthRequiredMixin, DeleteView):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "Вы не авторизованы. Пожалуйста, выполните вход.")
-            return redirect('users:login')
+            return redirect('login')
 
         user_to_delete = self.get_object()
 

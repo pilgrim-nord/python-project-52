@@ -39,7 +39,7 @@ class UserCRUDTestCase(TestCase):
         
         # После успешной регистрации должен быть редирект на страницу входа
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('users:login'))
+        self.assertRedirects(response, reverse('login'))
         
         # Проверяем, что пользователь создан
         self.assertTrue(User.objects.filter(username='newuser').exists())
