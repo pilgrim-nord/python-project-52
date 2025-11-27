@@ -25,6 +25,22 @@ class UserCreateView(CreateView):
     form_class = UserRegistrationForm
     template_name = 'users/form.html'
     success_url = reverse_lazy('login')
+    success_message = "Пользователь успешно зарегистрирован"
+
+    def form_valid(self, form):
+
+        response = super().form_valid(form)
+
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            self.success_message
+        )
+
+        if not self.request.session.session_key:
+            self.request.session.create()
+
+        return response
 
 class UserUpdateView(AuthRequiredMixin, UpdateView):
     model = User
