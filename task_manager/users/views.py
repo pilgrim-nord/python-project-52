@@ -60,6 +60,10 @@ class UserUpdateView(AuthRequiredMixin, UpdateView):
             return redirect('users:list')
 
         return super().dispatch(request, *args, **kwargs)
+    def form_valid(self, form):
+        messages.success(self.request, 'Пользователь успешно изменен')
+        return super().form_valid(form)
+
 
 class UserDeleteView(AuthRequiredMixin, DeleteView):
     model = User

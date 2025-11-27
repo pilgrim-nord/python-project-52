@@ -57,10 +57,13 @@ class UserRegistrationForm(UserCreationForm):
                 'class': 'form-control',
             }),
             'password1': forms.PasswordInput(attrs={
+                'placeholder': 'Пароль',
                 'class': 'form-control',
+                'autocomplete': 'new-password',
             }),
             'password2': forms.PasswordInput(attrs={
                 'class': 'form-control',
+                'autocomplete': 'new-password',
             }),
         }
 
@@ -94,14 +97,16 @@ class UserUpdateForm(forms.ModelForm):
     # Добавляем поля пароля (необязательные)
     password1 = forms.CharField(
         label='Пароль',
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-        required=False,
+        widget=forms.PasswordInput(attrs={'placeholder': 'Пароль', 'autocomplete': 'new-password'}),
+        required=True,
+        error_messages={'required': 'Обязательное поле'},
         help_text='Оставьте пустым, если не хотите менять пароль. Минимум 3 символа.',
     )
     password2 = forms.CharField(
         label='Подтверждение пароля',
-        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
-        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'autocomplete': 'new-password'}),
+        required=True,
+        error_messages={'required': 'Обязательное поле'},
         help_text='Подтверждение пароля',
     )
 
@@ -125,15 +130,8 @@ class UserUpdateForm(forms.ModelForm):
         cleaned_data = super().clean()
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
-
-        if password1 or password2:
-            if not password1:
-                raise ValidationError({'password1': 'Это поле обязательно, если вы меняете пароль.'})
-            if not password2:
-                raise ValidationError({'password2': 'Это поле обязательно, если вы меняете пароль.'})
-            if password1 != password2:
-                raise ValidationError('Пароли не совпадают.')
-
+        if password1 != password2:
+            raise ValidationError('Пароли не совпадают')
         return cleaned_data
 
     def save(self, commit=True):
