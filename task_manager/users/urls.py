@@ -14,13 +14,4 @@ urlpatterns = [
 
     # Удаление пользователя
     path('<int:pk>/delete/', views.UserDeleteView.as_view(), name='delete'),
-    path(
-        "login/",
-        CustomLoginView.as_view(
-            template_name="registration/login.html"
-        ),
-        name="login"
-    ),
-    path("logout/", CustomLogoutView.as_view(), name="logout"),
-    # path('', include('django.contrib.auth.urls')),
 ]

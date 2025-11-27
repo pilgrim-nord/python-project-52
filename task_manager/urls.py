@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from django.views.generic import RedirectView
 
-from task_manager.views import IndexView, CustomLogoutView
+from task_manager.views import IndexView, CustomLogoutView, CustomLoginView
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -27,7 +27,7 @@ urlpatterns = [
     path('tasks/', include('task_manager.tasks.urls', namespace='tasks')),
     path('labels/', include('task_manager.labels.urls', namespace='labels')),
     path('statuses/', include('task_manager.statuses.urls', namespace='statuses')),
+    path('login/', CustomLoginView.as_view(template_name="registration/login.html"), name='login'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
     # path("logout/", CustomLogoutView.as_view(), name="logout"),
-    path('login/', RedirectView.as_view(url=reverse_lazy('users:login'), permanent=True)),
-    path('logout/', RedirectView.as_view(url=reverse_lazy('users:logout'), permanent=True)),
 ]

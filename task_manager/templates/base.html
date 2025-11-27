@@ -36,7 +36,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <form class="d-inline" action="{% url 'users:logout' %}" method="post">
+                            <form class="d-inline" action="{% url 'logout' %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-link nav-link">Выход</button>
                             </form>
@@ -47,7 +47,7 @@
                             <a class="nav-link" href="{% url 'users:list' %}">Пользователи</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
+                            <a class="nav-link" href="{% url 'login' %}">Вход</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'users:create' %}">Регистрация</a>
