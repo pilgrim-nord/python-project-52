@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Task(models.Model):
-    name = models.CharField(max_length=200, verbose_name="Название")
+    name = models.CharField(max_length=200, verbose_name="Имя")
     description = models.TextField(verbose_name="Описание")
     author = models.ForeignKey(
         User,
