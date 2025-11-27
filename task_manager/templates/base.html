@@ -36,7 +36,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <form class="d-inline" action="{% url 'logout' %}" method="post">
+                            <form class="d-inline" action="{% url 'users:logout' %}" method="post">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-link nav-link">Выход</button>
                             </form>
