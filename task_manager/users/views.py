@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserChangeForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import logout
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from .forms import UserRegistrationForm, UserUpdateForm
@@ -96,7 +97,10 @@ class UserDeleteView(AuthRequiredMixin, DeleteView):
             messages.error(request, "Невозможно удалить пользователя, потому что он используется")
             return redirect('users:list')
         
-        return super().post(request, *args, **kwargs)
+        logout(self.request)
+        super().post(request, *args, **kwargs)
+        messages.success(request, "Пользователь успешно удален")
+        return redirect('users:list')
 
 
 def index(request):
