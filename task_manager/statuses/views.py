@@ -32,7 +32,7 @@ class StatusUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = StatusForm
     template_name = 'statuses/update.html'
     success_url = STATUSES_LIST_URL
-    success_message = _('Статус успешно изменён')
+    success_message = _('Статус успешно изменен')
 
 
 class StatusDeleteView(LoginRequiredMixin, DeleteView):
@@ -49,5 +49,5 @@ class StatusDeleteView(LoginRequiredMixin, DeleteView):
             )
             return redirect(self.success_url)
 
-        messages.success(self.request, _('Статус успешно удалён'))
+        messages.success(self.request, _('Статус успешно удален'))
         return super().form_valid(form)
