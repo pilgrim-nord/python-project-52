@@ -93,16 +93,16 @@ class UserRegistrationForm(UserCreationForm):
 class UserUpdateForm(forms.ModelForm):
     # Добавляем поля пароля (необязательные)
     password1 = forms.CharField(
-        label='Новый пароль',
+        label='Пароль',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
         required=False,
         help_text='Оставьте пустым, если не хотите менять пароль. Минимум 3 символа.',
     )
     password2 = forms.CharField(
-        label='Подтверждение нового пароля',
+        label='Подтверждение пароля',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
         required=False,
-        help_text='Повторите пароль для подтверждения.',
+        help_text='Подтверждение пароля',
     )
 
     class Meta:
