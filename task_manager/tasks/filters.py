@@ -2,6 +2,7 @@ import django_filters
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Count
 
 from .models import Task
 from task_manager.statuses.models import Status
@@ -19,10 +20,18 @@ class TaskFilter(django_filters.FilterSet):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    labels = django_filters.ModelMultipleChoiceFilter(
+    # labels = django_filters.ModelMultipleChoiceFilter(
+    #     queryset=Label.objects.all(),
+    #     label="Метка",
+    #     widget=forms.SelectMultiple(attrs={'class': 'form-select'}),
+    #     method='labels_filter'
+    # )
+
+    labels = django_filters.ModelChoiceFilter(
+        field_name='labels',  # ← вот это главное!
         queryset=Label.objects.all(),
         label="Метка",
-        widget=forms.SelectMultiple(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select'})
     )
 
     own_task = django_filters.BooleanFilter(
@@ -38,6 +47,30 @@ class TaskFilter(django_filters.FilterSet):
         """
         if value:
             return queryset.filter(author=self.request.user)
+        return queryset
+
+    def labels_filter(self, queryset, name, value):
+        """
+        Фильтрует задачи, содержащие ВСЕ выбранные метки (логика "И").
+        Если выбраны метки [A, B], показываются только задачи, 
+        которые одновременно содержат метки A И B.
+        """
+        if value:
+            # Получаем список ID выбранных меток
+            label_ids = [label.id for label in value]
+            
+            # Начинаем с пустого набора
+            result_queryset = queryset.model.objects.none()
+            
+            # Для каждой выбранной метки фильтруем задачи
+            # и объединяем результаты через UNION
+            for label_id in label_ids:
+                tasks_with_label = queryset.filter(labels__id=label_id)
+                result_queryset = result_queryset.union(tasks_with_label, all=False)
+            
+            # Возвращаем задачи, которые содержат все выбранные метки
+            return result_queryset.distinct()
+        
         return queryset
     
     @property
