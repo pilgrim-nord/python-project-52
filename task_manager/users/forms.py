@@ -117,8 +117,7 @@ class UserUpdateForm(forms.ModelForm):
         ),
         required=True,
         error_messages={'required': 'Обязательное поле'},
-        help_text='Оставьте пустым, если не хотите менять пароль. \'
-                  'Минимум 3 символа.',
+        help_text='Оставьте пустым, если не хотите менять пароль.',
     )
     password2 = forms.CharField(
         label='Подтверждение пароля',
