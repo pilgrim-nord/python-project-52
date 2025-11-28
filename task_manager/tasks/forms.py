@@ -17,10 +17,13 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         User.objects.get_or_create(
-            username="anna",
+            username="executor",
             defaults={
                 "first_name": "Анна",
                 "last_name": "Иванова",
             }
         )
+
+        self.fields['executor'].queryset = User.objects.all()
