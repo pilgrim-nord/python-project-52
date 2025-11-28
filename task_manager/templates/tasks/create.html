@@ -1,24 +1,34 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
 {% load i18n %}
-
 {% block content %}
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <h1 class="mb-4">
-        {% if form.instance.pk %}{% trans "Изменение задачи" %}{% else %}{% trans "Создать задачу" %}{% endif %}
-      </h1>
-      <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        <div class="form-group mt-3">
-          <button type="submit" class="btn btn-primary">
-            {% if form.instance.pk %}{% trans "Изменить" %}{% else %}{% trans "Создать" %}{% endif %}
-          </button>
+<form action="{% url 'tasks:create' %}" method="post">
+    <div class="row justify-content-center">
+        <div class="col-sm-8">
+            <h1 class="my-4">{% trans 'Создать задачу' %}</h1>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input class="btn btn-primary" type="submit" value="{% trans 'Создать' context 'verb' %}">
         </div>
-      </form>
     </div>
-  </div>
-</div>
+</form>
+{#{% block content %}#}
+{#<div class="container">#}
+{#  <div class="row justify-content-center">#}
+{#    <div class="col-md-6">#}
+{#      <h1 class="mb-4">#}
+{#        {% if form.instance.pk %}{% trans "Изменение задачи" %}{% else %}{% trans "Создать задачу" %}{% endif %}#}
+{#      </h1>#}
+{#      <form method="post">#}
+{#        {% csrf_token %}#}
+{#        {% bootstrap_form form %}#}
+{#        <div class="form-group mt-3">#}
+{#          <button type="submit" class="btn btn-primary">#}
+{#            {% if form.instance.pk %}{% trans "Изменить" %}{% else %}{% trans "Создать" %}{% endif %}#}
+{#          </button>#}
+{#        </div>#}
+{#      </form>#}
+{#    </div>#}
+{#  </div>#}
+{#</div>#}
 {% endblock %}
