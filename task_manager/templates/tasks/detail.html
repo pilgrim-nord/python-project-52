@@ -17,11 +17,11 @@
             </div>
             <div class="row mb-2">
                 <div class="col-3">{% trans "Автор" %}</div>
-                <div class="col-9">{ task.author.first_name }} {{ task.author.last_name }}</div>
+                <div class="col-9">{{ task.author.first_name }} {{ task.author.last_name }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-3">{% trans "Исполнитель" %}:</div>
-                <div class="col-9">{{ task.executor.username|default:"Не назначен" }}</div>
+                <div class="col-9">{{ task.executor.get_full_name|default:"Не назначен" }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-3">{% trans "Статус" %}:</div>
