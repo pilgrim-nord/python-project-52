@@ -19,10 +19,10 @@ class TaskFilter(django_filters.FilterSet):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    labels = django_filters.ModelChoiceFilter(
+    labels = django_filters.ModelMultipleChoiceFilter(
         queryset=Label.objects.all(),
         label="Метка",
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.SelectMultiple(attrs={'class': 'form-select'})
     )
 
     own_task = django_filters.BooleanFilter(
@@ -39,6 +39,14 @@ class TaskFilter(django_filters.FilterSet):
         if value:
             return queryset.filter(author=self.request.user)
         return queryset
+    
+    @property
+    def qs(self):
+        """
+        Возвращает отфильтрованный queryset с distinct() для предотвращения дублирования
+        при фильтрации по ManyToMany полям (метки).
+        """
+        return super().qs.distinct()
 
     class Meta:
         model = Task
@@ -50,5 +58,3 @@ class TaskFilter(django_filters.FilterSet):
             lambda obj: obj.get_full_name()
         )
 
-    def qs(self):
-        return super().qs().distinct()
