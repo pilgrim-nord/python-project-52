@@ -49,3 +49,6 @@ class TaskFilter(django_filters.FilterSet):
         self.filters['executor'].field.label_from_instance = (
             lambda obj: obj.get_full_name()
         )
+
+    def qs(self):
+        return super().qs().distinct()
