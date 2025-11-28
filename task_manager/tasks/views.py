@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -64,6 +65,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
+        messages.success(self.request, "Задача успешно создана")
         return super().form_valid(form)
 
 
@@ -93,3 +95,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         )
         # Перенаправляем на список задач вместо поднятия исключения
         return HttpResponseRedirect(reverse_lazy('tasks:list'))
+    
+    def form_valid(self, form):
+        messages.success(self.request, "Задача успешно удалена")
+        return super().form_valid(form)
