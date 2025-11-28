@@ -46,7 +46,8 @@ class TaskFilter(django_filters.FilterSet):
         """
         if value in [True, 'on', '1']:
             request = getattr(self, 'request', None)
-            if request and hasattr(request, 'user') and request.user.is_authenticated:
+            if (request and hasattr(request, 'user')
+                    and request.user.is_authenticated):
                 return queryset.filter(author=request.user)
         return queryset
 
@@ -62,8 +63,8 @@ class TaskFilter(django_filters.FilterSet):
     @property
     def qs(self):
         """
-        Возвращает отфильтрованный queryset с distinct() для предотвращения дублирования
-        при фильтрации по ManyToMany полям (метки).
+        Возвращает отфильтрованный queryset с distinct() для
+        предотвращения дублирования при фильтрации по ManyToMany полям (метки).
         """
         return super().qs.distinct()
 

@@ -28,22 +28,30 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "username", "password1", "password2")
+        fields = (
+            "first_name", "last_name", "username", "password1", "password2"
+        )
         labels = {
             'username': 'Имя пользователя',
             'password1': 'Пароль',
             'password2': 'Подтверждение пароля',
         }
         help_texts = {
-            'username': 'Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_.',
+            'username': (
+                'Обязательное поле. Не более 150 символов. '
+                'Только буквы, цифры и символы @/./+/-/_.'
+            ),
             'password1': 'Ваш пароль должен содержать как минимум 3 символа.',
-            'password2': 'Для подтверждения введите, пожалуйста, пароль ещё раз.',
+            'password2': 'Для подтверждения введите, пожалуйста, '
+                           'пароль ещё раз.',
         }
         error_messages = {
             'username': {
                 'required': 'Обязательное поле.',
                 'unique': 'Пользователь с таким именем уже существует.',
-                'max_length': 'Убедитесь, что это значение содержит не более 150 символов.',
+                'max_length': (
+                    'Убедитесь, что это значение содержит не более 150 символов.'
+                ),
             },
             'password1': {
                 'required': 'Обязательное поле.',
@@ -72,10 +80,16 @@ class UserRegistrationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
 
         # 2. Затем переопределяем help_text для нужных полей
-        self.fields[
-            'username'].help_text = 'Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_.'
-        self.fields['password1'].help_text = 'Ваш пароль должен содержать как минимум 3 символа.'
-        self.fields['password2'].help_text = 'Для подтверждения введите, пожалуйста, пароль ещё раз.'
+        self.fields['username'].help_text = (
+            'Обязательное поле. Не более 150 символов. '
+            'Только буквы, цифры и символы @/./+/-/_.'
+        )
+        self.fields['password1'].help_text = (
+            'Ваш пароль должен содержать как минимум 3 символа.'
+        )
+        self.fields['password2'].help_text = (
+            'Для подтверждения введите, пожалуйста, пароль ещё раз.'
+        )
     
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -97,14 +111,18 @@ class UserUpdateForm(forms.ModelForm):
     # Добавляем поля пароля (необязательные)
     password1 = forms.CharField(
         label='Пароль',
-        widget=forms.PasswordInput(attrs={'placeholder': 'Пароль', 'autocomplete': 'new-password'}),
+        widget=forms.PasswordInput(
+            attrs={'placeholder': 'Пароль', 'autocomplete': 'new-password'}
+        ),
         required=True,
         error_messages={'required': 'Обязательное поле'},
         help_text='Оставьте пустым, если не хотите менять пароль. Минимум 3 символа.',
     )
     password2 = forms.CharField(
         label='Подтверждение пароля',
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'autocomplete': 'new-password'}),
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'autocomplete': 'new-password'}
+        ),
         required=True,
         error_messages={'required': 'Обязательное поле'},
         help_text='Подтверждение пароля',

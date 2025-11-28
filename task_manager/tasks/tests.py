@@ -12,8 +12,12 @@ from task_manager.labels.models import Label
 class TaskTests(TestCase):
     def setUp(self):
         """Создаем пользователей, статусы, метки и задачи для тестов."""
-        self.user1 = User.objects.create_user(username='user1', password='password123')
-        self.user2 = User.objects.create_user(username='user2', password='password123')
+        self.user1 = User.objects.create_user(
+            username='user1', password='password123'
+        )
+        self.user2 = User.objects.create_user(
+            username='user2', password='password123'
+        )
 
         self.status1 = Status.objects.create(name='Status 1')
         self.status2 = Status.objects.create(name='Status 2')
@@ -69,29 +73,43 @@ class TaskTests(TestCase):
     def test_filter_by_status(self):
         """Тест фильтрации по статусу."""
         self.client.login(username='user1', password='password123')
-        response = self.client.get(reverse('tasks:list'), {'status': self.status2.pk})
+        response = self.client.get(
+            reverse('tasks:list'), {'status': self.status2.pk}
+        )
 
         self.assertEqual(response.status_code, 200)
         # Ожидаем, что останется только task2
-        self.assertCountEqual(self._get_task_ids_from_response(response), [self.task2.pk])
+        self.assertCountEqual(
+            self._get_task_ids_from_response(response), [self.task2.pk]
+        )
 
     def test_filter_by_executor(self):
         """Тест фильтрации по исполнителю."""
         self.client.login(username='user1', password='password123')
-        response = self.client.get(reverse('tasks:list'), {'executor': self.user1.pk})
+        response = self.client.get(
+            reverse('tasks:list'), {'executor': self.user1.pk}
+        )
 
         self.assertEqual(response.status_code, 200)
         # Ожидаем task2 и task3
-        self.assertCountEqual(self._get_task_ids_from_response(response), [self.task2.pk, self.task3.pk])
+        self.assertCountEqual(
+            self._get_task_ids_from_response(response),
+            [self.task2.pk, self.task3.pk]
+        )
 
     def test_filter_by_label(self):
         """Тест фильтрации по метке."""
         self.client.login(username='user1', password='password123')
-        response = self.client.get(reverse('tasks:list'), {'label': self.label1.pk})
+        response = self.client.get(
+            reverse('tasks:list'), {'label': self.label1.pk}
+        )
 
         self.assertEqual(response.status_code, 200)
         # Ожидаем task1 и task3
-        self.assertCountEqual(self._get_task_ids_from_response(response), [self.task1.pk, self.task3.pk])
+        self.assertCountEqual(
+            self._get_task_ids_from_response(response),
+            [self.task1.pk, self.task3.pk]
+        )
 
     def test_filter_by_self_tasks(self):
         """Тест фильтрации 'Только свои задачи'."""
@@ -100,7 +118,10 @@ class TaskTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         # Ожидаем task1 и task2, т.к. их автор - user1
-        self.assertCountEqual(self._get_task_ids_from_response(response), [self.task1.pk, self.task2.pk])
+        self.assertCountEqual(
+            self._get_task_ids_from_response(response),
+            [self.task1.pk, self.task2.pk]
+        )
 
     def test_no_filter_shows_all_tasks(self):
         """Тест, что без фильтров показываются все задачи."""
@@ -122,4 +143,6 @@ class TaskTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         # Ожидаем только task3 (у нее Status1 и исполнитель user1)
-        self.assertCountEqual(self._get_task_ids_from_response(response), [self.task3.pk])
+        self.assertCountEqual(
+            self._get_task_ids_from_response(response), [self.task3.pk]
+        )

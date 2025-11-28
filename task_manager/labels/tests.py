@@ -11,7 +11,9 @@ from django.utils import timezone  # Импортируем для работы 
 
 class LabelTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='password')
+        self.user = User.objects.create_user(
+            username='testuser', password='password'
+        )
         self.label = Label.objects.create(name='Test Label')
         self.status = Status.objects.create(name='New Status')
 
@@ -21,7 +23,9 @@ class LabelTests(TestCase):
         response = self.client.get(reverse('labels:list'))
         self.assertEqual(response.status_code, 200)
         # Проверяем, что дата создания метки присутствует на странице
-        self.assertContains(response, self.label.created_at.strftime('%d.%m.%Y'))
+        self.assertContains(
+            response, self.label.created_at.strftime('%d.%m.%Y')
+        )
 
     def test_label_create_sets_creation_date(self):
         """Тест, что при создании метки автоматически устанавливается дата."""
@@ -32,9 +36,12 @@ class LabelTests(TestCase):
         self.client.post(reverse('labels:create'), {'name': 'New Label'})
 
         new_label = Label.objects.get(name='New Label')
-        # Проверяем, что дата создания установлена и находится в нужном диапазоне
+        # Проверяем, что дата создания установлена и находится в нужном
+        # диапазоне
         self.assertIsNotNone(new_label.created_at)
-        self.assertTrue(before_creation <= new_label.created_at <= timezone.now())
+        self.assertTrue(
+            before_creation <= new_label.created_at <= timezone.now()
+        )
 
     # Остальные тесты остаются без изменений, так как логика не поменялась
     def test_label_update_view(self):
