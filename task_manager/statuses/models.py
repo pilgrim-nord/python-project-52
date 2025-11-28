@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
+
 # Create your models here.
 class Status(models.Model):
     name = models.CharField("Имя", max_length=100)

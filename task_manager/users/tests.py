@@ -184,7 +184,7 @@ class UserCRUDTestCase(TestCase):
         status = Status.objects.create(name='Тестовый статус')
         
         # Создаем задачу, где наш пользователь - автор
-        task = Task.objects.create(
+        _task = Task.objects.create(
             name='Тестовая задача',
             description='Описание',
             author=self.user,

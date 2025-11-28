@@ -4,6 +4,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
+
 class Task(models.Model):
     name = models.CharField(max_length=200, verbose_name="Имя")
     description = models.TextField(verbose_name="Описание")
@@ -18,7 +19,7 @@ class Task(models.Model):
         on_delete=models.PROTECT,
         related_name='executor_tasks',
         verbose_name="Исполнитель",
-        null=True, # Исполнитель может быть не назначен
+        null=True,  # Исполнитель может быть не назначен
         blank=True
     )
     status = models.ForeignKey(
@@ -29,9 +30,12 @@ class Task(models.Model):
     labels = models.ManyToManyField(
         'labels.Label',
         verbose_name="Метки",
-        blank=True # Метки могут быть не назначены
+        blank=True  # Метки могут быть не назначены
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата создания"
+    )
 
     def __str__(self):
         return self.name
