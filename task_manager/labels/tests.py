@@ -1,12 +1,13 @@
 # task_manager/labels/tests.py
 
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
-from .models import Label
-from tasks.models import Task
-from statuses.models import Status
 from django.utils import timezone  # Импортируем для работы с датой
+from statuses.models import Status
+from tasks.models import Task
+
+from .models import Label
 
 
 class LabelTests(TestCase):

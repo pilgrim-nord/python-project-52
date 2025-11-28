@@ -1,6 +1,6 @@
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.contrib.auth.models import User
+from django.test import Client, TestCase
+from django.urls import reverse
 
 
 class UserCRUDTestCase(TestCase):
@@ -177,8 +177,8 @@ class UserCRUDTestCase(TestCase):
     def test_delete_user_with_tasks_shows_confirmation_then_error(self):
         """Тест, что форма подтверждения отображается, но после подтверждения показывается ошибка"""
         # Создаем задачу, где пользователь является автором
-        from task_manager.tasks.models import Task
         from task_manager.statuses.models import Status
+        from task_manager.tasks.models import Task
         
         # Создаем статус для задачи
         status = Status.objects.create(name='Тестовый статус')

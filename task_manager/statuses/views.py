@@ -1,13 +1,13 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
-from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from .models import Status
 from .forms import StatusForm
+from .models import Status
 
 STATUSES_LIST_URL = reverse_lazy('statuses:list')
 

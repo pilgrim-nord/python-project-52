@@ -1,13 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
-from .models import Task
-from .forms import TaskForm
-from task_manager.statuses.models import Status
-from task_manager.labels.models import Label
 from django.contrib.auth.models import User
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
+
+from task_manager.labels.models import Label
+from task_manager.statuses.models import Status
+
+from .forms import TaskForm
+from .models import Task
 
 
 class TaskListView(ListView):
@@ -41,7 +48,6 @@ class TaskListView(ListView):
                 queryset = queryset.filter(author=self.request.user)
 
         return queryset.distinct()
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+
 import dj_database_url
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'webserver',
-    'check.hexlet.io',                           # обязательно для новых проверок
+    'check.hexlet.io',
     'python-project-52-nw7g.onrender.com',       # твой домен
 ]
 
