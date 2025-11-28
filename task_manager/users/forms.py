@@ -3,98 +3,75 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+# Константы — SonarCloud их не трогает
+USERNAME_FIELD = 'username'
+PASS1 = 'password1'
+PASS2 = 'password2'
+
 
 class UserRegistrationForm(UserCreationForm):
     first_name = forms.CharField(
         required=True,
         label='Имя',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-        }),
-        error_messages={
-            'required': 'Обязательное поле.',
-        }
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        error_messages={'required': 'Обязательное поле.'}
     )
     last_name = forms.CharField(
         required=True,
         label='Фамилия',
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-        }),
-        error_messages={
-            'required': 'Обязательное поле.',
-        }
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        error_messages={'required': 'Обязательное поле.'}
     )
 
     class Meta:
         model = User
-        fields = (
-            "first_name", "last_name", "username", "password1", "password2"
-        )
+        fields = ("first_name", "last_name", USERNAME_FIELD, PASS1, PASS2)
         labels = {
-            'username': 'Имя пользователя',
-            'password1': 'Пароль',
-            'password2': 'Подтверждение пароля',
+            USERNAME_FIELD: 'Имя пользователя',
+            PASS1: 'Пароль',
+            PASS2: 'Подтверждение пароля',
         }
         help_texts = {
-            'username': (
-                'Обязательное поле. Не более 150 символов. '
-                'Только буквы, цифры и символы @/./+/-/_.'
-            ),
-            'password1': 'Ваш пароль должен содержать как минимум 3 символа.',
-            'password2': 'Для подтверждения введите, пожалуйста, '
-                           'пароль ещё раз.',
+            USERNAME_FIELD: 'Обязательное поле. Не более 150 символов. Только буквы, цифры и @/./+/-/_',
+            PASS1: 'Ваш пароль должен содержать как минимум 3 символа.',
+            PASS2: 'Для подтверждения введите пароль ещё раз.',
         }
         error_messages = {
-            'username': {
+            USERNAME_FIELD: {
                 'required': 'Обязательное поле.',
                 'unique': 'Пользователь с таким именем уже существует.',
                 'max_length': 'Не более 150 символов.',
             },
-            'password1': {
-                'required': 'Обязательное поле.',
-            },
-            'password2': {
-                'required': 'Обязательное поле.',
-            },
+            PASS1: {'required': 'Обязательное поле.'},
+            PASS2: {'required': 'Обязательное поле.'},
         }
-        widgets = {
-            'username': forms.TextInput(attrs={
-                'class': 'form-control',
-            }),
-            'password1': forms.PasswordInput(attrs={
-                'placeholder': 'Пароль',
-                'class': 'form-control',
-                'autocomplete': 'new-password',
-            }),
-            'password2': forms.PasswordInput(attrs={
-                'class': 'form-control',
-                'autocomplete': 'new-password',
-            }),
-        }
+        # УБРАЛИ widgets отсюда — они больше не нужны
+        # widgets = { ... }  ← удалить весь блок!
 
     def __init__(self, *args, **kwargs):
-        # 1. Сначала вызываем родительский конструктор
         super().__init__(*args, **kwargs)
 
-        # 2. Затем переопределяем help_text для нужных полей
-        self.fields['username'].help_text = (
+        # Теперь безопасно обращаемся по константам
+        self.fields[USERNAME_FIELD].help_text = (
             'Обязательное поле. Не более 150 символов. '
             'Только буквы, цифры и символы @/./+/-/_.'
         )
-        self.fields['password1'].help_text = (
-            'Ваш пароль должен содержать как минимум 3 символа.'
-        )
-        self.fields['password2'].help_text = (
-            'Для подтверждения введите, пожалуйста, пароль ещё раз.'
-        )
+        self.fields[PASS1].widget.attrs.update({
+            'placeholder': 'Пароль',
+            'class': 'form-control',
+            'autocomplete': 'new-password',
+        })
+        self.fields[PASS2].widget.attrs.update({
+            'class': 'form-control',
+            'autocomplete': 'new-password',
+        })
 
     def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
+        p1 = self.cleaned_data.get(PASS1)
+        p2 = self.cleaned_data.get(PASS2)
+        if p1 and p2 and p1 != p2:
             raise ValidationError("Два поля пароля не совпадают.")
-        return password2
+        return p2
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -106,24 +83,23 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-    # Добавляем поля пароля (необязательные)
     password1 = forms.CharField(
         label='Пароль',
-        widget=forms.PasswordInput(
-            attrs={'placeholder': 'Пароль', 'autocomplete': 'new-password'}
-        ),
-        required=True,
-        error_messages={'required': 'Обязательное поле'},
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Пароль',
+            'autocomplete': 'new-password'
+        }),
+        required=False,
         help_text='Оставьте пустым, если не хотите менять пароль.',
     )
     password2 = forms.CharField(
         label='Подтверждение пароля',
-        widget=forms.PasswordInput(
-            attrs={'class': 'form-control', 'autocomplete': 'new-password'}
-        ),
-        required=True,
-        error_messages={'required': 'Обязательное поле'},
-        help_text='Подтверждение пароля',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'autocomplete': 'new-password'
+        }),
+        required=False,
+        help_text='Введите пароль ещё раз',
     )
 
     class Meta:
@@ -143,21 +119,17 @@ class UserUpdateForm(forms.ModelForm):
         }
 
     def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get('password1')
-        password2 = cleaned_data.get('password2')
-        if password1 != password2:
+        cleaned = super().clean()
+        p1 = cleaned.get('password1')
+        p2 = cleaned.get('password2')
+        if p1 and p1 != p2:
             raise ValidationError('Пароли не совпадают')
-        return cleaned_data
+        return cleaned
 
     def save(self, commit=True):
         user = super().save(commit=False)
-
-        # Обновляем пароль, только если он указан
-        password1 = self.cleaned_data.get('password1')
-        if password1:
-            user.set_password(password1)
-
+        if self.cleaned_data['password1']:
+            user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
         return user
