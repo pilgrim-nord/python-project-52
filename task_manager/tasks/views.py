@@ -82,6 +82,10 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'tasks/update.html'
     success_url = reverse_lazy('tasks:list')
 
+    def form_valid(self, form):
+        messages.success(self.request, "Задача успешно изменена")
+        return super().form_valid(form)
+
 
 class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
