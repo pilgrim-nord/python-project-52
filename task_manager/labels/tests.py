@@ -47,7 +47,8 @@ class LabelTests(TestCase):
     # Остальные тесты остаются без изменений, так как логика не поменялась
     def test_label_update_view(self):
         self.client.login(username='testuser', password='password')
-        resp = self.client.post(reverse('labels:update', kwargs={'pk': self.label.pk}),
+        resp = self.client.post(reverse('labels:update',
+                                        kwargs={'pk': self.label.pk}),
                                 {'name': 'Updated Label'})
         self.assertEqual(resp.status_code, 302)
         self.label.refresh_from_db()

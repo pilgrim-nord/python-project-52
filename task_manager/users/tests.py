@@ -86,7 +86,6 @@ class UserCRUDTestCase(TestCase):
         
         # Проверяем POST запрос - обновление пользователя
         response = self.client.post(url, data=updated_data)
-        
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('users:list'))
