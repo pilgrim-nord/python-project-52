@@ -28,13 +28,13 @@ class TaskFilter(django_filters.FilterSet):
     # )
 
     labels = django_filters.ModelChoiceFilter(
-        field_name='labels',  # ← вот это главное!
         queryset=Label.objects.all(),
         label="Метка",
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        method='labels_filter'
     )
 
-    own_task = django_filters.BooleanFilter(
+    self_tasks = django_filters.BooleanFilter(
         label=_('Только свои задачи'),
         method='own_tasks_filter',
         widget=forms.CheckboxInput()
@@ -45,31 +45,18 @@ class TaskFilter(django_filters.FilterSet):
         Фильтрует задачи,
         принадлежащие текущему пользователю (если value == True).
         """
-        if value:
-            return queryset.filter(author=self.request.user)
+        if value in [True, 'on', '1']:
+            request = getattr(self, 'request', None)
+            if request and hasattr(request, 'user') and request.user.is_authenticated:
+                return queryset.filter(author=request.user)
         return queryset
 
     def labels_filter(self, queryset, name, value):
         """
-        Фильтрует задачи, содержащие ВСЕ выбранные метки (логика "И").
-        Если выбраны метки [A, B], показываются только задачи, 
-        которые одновременно содержат метки A И B.
+        Фильтрует задачи по выбранной метке.
         """
         if value:
-            # Получаем список ID выбранных меток
-            label_ids = [label.id for label in value]
-            
-            # Начинаем с пустого набора
-            result_queryset = queryset.model.objects.none()
-            
-            # Для каждой выбранной метки фильтруем задачи
-            # и объединяем результаты через UNION
-            for label_id in label_ids:
-                tasks_with_label = queryset.filter(labels__id=label_id)
-                result_queryset = result_queryset.union(tasks_with_label, all=False)
-            
-            # Возвращаем задачи, которые содержат все выбранные метки
-            return result_queryset.distinct()
+            return queryset.filter(labels__id=value.id)
         
         return queryset
     
@@ -83,7 +70,7 @@ class TaskFilter(django_filters.FilterSet):
 
     class Meta:
         model = Task
-        fields = ['status', 'executor', 'labels', 'own_task']
+        fields = ['status', 'executor', 'labels', 'self_tasks']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
