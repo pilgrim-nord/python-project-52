@@ -87,7 +87,7 @@ class UserCRUDTestCase(TestCase):
         # Проверяем POST запрос - обновление пользователя
         response = self.client.post(url, data=updated_data)
         
-        # После успешного обновления должен быть редирект на список пользователей
+
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('users:list'))
         
@@ -168,14 +168,14 @@ class UserCRUDTestCase(TestCase):
         
         # Проверяем, что в сообщениях есть правильный текст ошибки
         messages = list(response.wsgi_request._messages)
-        error_message_found = any('У вас нет прав для изменения другого пользователя' in str(message) for message in messages)
+        error_message_found = any('У вас нет прав для изменения другого \ '
+                    'пользователя' in str(message) for message in messages)
         self.assertTrue(error_message_found, "Сообщение об ошибке не найдено")
         
         # Проверяем, что пользователь не удален
         self.assertTrue(User.objects.filter(pk=other_user.pk).exists())
 
     def test_delete_user_with_tasks_shows_confirmation_then_error(self):
-        """Тест, что форма подтверждения отображается, но после подтверждения показывается ошибка"""
         # Создаем задачу, где пользователь является автором
         from task_manager.statuses.models import Status
         from task_manager.tasks.models import Task

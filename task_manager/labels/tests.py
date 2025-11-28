@@ -47,14 +47,16 @@ class LabelTests(TestCase):
     # Остальные тесты остаются без изменений, так как логика не поменялась
     def test_label_update_view(self):
         self.client.login(username='testuser', password='password')
-        response = self.client.post(reverse('labels:update', kwargs={'pk': self.label.pk}), {'name': 'Updated Label'})
-        self.assertEqual(response.status_code, 302)
+        resp = self.client.post(reverse('labels:update', kwargs={'pk': self.label.pk}),
+                                {'name': 'Updated Label'})
+        self.assertEqual(resp.status_code, 302)
         self.label.refresh_from_db()
         self.assertEqual(self.label.name, 'Updated Label')
 
     def test_label_delete_success(self):
         self.client.login(username='testuser', password='password')
-        response = self.client.post(reverse('labels:delete', kwargs={'pk': self.label.pk}))
+        response = self.client.post(reverse('labels:delete',
+                                            kwargs={'pk': self.label.pk}))
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Label.objects.filter(pk=self.label.pk).exists())
 
@@ -67,7 +69,8 @@ class LabelTests(TestCase):
             status=self.status
         ).labels.add(self.label)
 
-        response = self.client.post(reverse('labels:delete', kwargs={'pk': self.label.pk}))
+        response = self.client.post(reverse('labels:delete',
+                                            kwargs={'pk': self.label.pk}))
 
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Label.objects.filter(pk=self.label.pk).exists())

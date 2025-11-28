@@ -54,7 +54,7 @@ def test_flash_messages():
     )
     print(f"✅ Вход {'успешен' if login_successful else 'неудачен'}")
     
-    print("\n" + "="* 60)
+    print("\n" + "=" * 60)
     print("ТЕСТ 1: СОЗДАНИЕ НОВОЙ ЗАДАЧИ")
     print("=" * 60)
     
@@ -76,7 +76,7 @@ def test_flash_messages():
     
     print(f"📊 Статус ответа: {response.status_code}")
     
-    print("\n" + "="* 60)
+    print("\n" + "=" * 60)
     print("ТЕСТ 2: ДОСТУП К СПИСКУ ЗАДАЧ")
     print("=" * 60)
     
@@ -91,7 +91,7 @@ def test_flash_messages():
     else:
         print("⚠️  {% bootstrap_messages %} не найден в шаблоне")
     
-    print("\n" + "="* 60)
+    print("\n" + "=" * 60)
     print("ТЕСТ 3: ПОПЫТКА УДАЛИТЬ ЗАДАЧУ ДРУГОГО ПОЛЬЗОВАТЕЛЯ")
     print("=" * 60)
     
@@ -125,14 +125,15 @@ def test_flash_messages():
                 if 'ошибка' in str(msg).lower() or 'удалить' in str(msg).lower()
             ]
                 if error_messages:
-                    print(f"✅ Найдено сообщение об ошибке: '{error_messages[0]}'")
+                    print(f"Найдено сообщение об ошибке: "
+                          f"'{error_messages[0]}'")
                 else:
                     print("⚠️  Сообщение об ошибке не найдено")
                     
     except Exception as e:
         print(f"⚠️  Ошибка при создании задачи: {e}")
     
-    print("\n" + "="* 60)
+    print("\n" + "=" * 60)
     print("ТЕСТ 4: НАСТРОЙКИ DJANGO")
     print("=" * 60)
     
@@ -159,7 +160,7 @@ def test_flash_messages():
     for check_result, description in checks:
         print(f"{'✅' if check_result else '❌'} {description}")
     
-    print("\n" + "="* 60)
+    print("\n" + "=" * 60)
     print("ЗАВЕРШЕНИЕ ТЕСТИРОВАНИЯ")
     print("=" * 60)
     
