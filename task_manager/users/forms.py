@@ -49,7 +49,7 @@ class UserRegistrationForm(UserCreationForm):
             'username': {
                 'required': 'Обязательное поле.',
                 'unique': 'Пользователь с таким именем уже существует.',
-                'max_length':'Не более 150 символов.',
+                'max_length': 'Не более 150 символов.',
             },
             'password1': {
                 'required': 'Обязательное поле.',
