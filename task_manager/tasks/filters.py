@@ -1,0 +1,51 @@
+import django_filters
+from django import forms
+from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+
+from .models import Task
+from task_manager.statuses.models import Status
+from task_manager.labels.models import Label
+
+
+class TaskFilter(django_filters.FilterSet):
+    status = django_filters.ModelChoiceFilter(
+        queryset=Status.objects.all(),
+    )
+
+    executor = django_filters.ModelChoiceFilter(
+        queryset=User.objects.all(),
+        label="Исполнитель",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    labels = django_filters.ModelChoiceFilter(
+        queryset=Label.objects.all(),
+        label="Метка",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
+    own_task = django_filters.BooleanFilter(
+        label=_('Только свои задачи'),
+        method='own_tasks_filter',
+        widget=forms.CheckboxInput()
+    )
+
+    def own_tasks_filter(self, queryset, name, value):
+        """
+        Фильтрует задачи,
+        принадлежащие текущему пользователю (если value == True).
+        """
+        if value:
+            return queryset.filter(author=self.request.user)
+        return queryset
+
+    class Meta:
+        model = Task
+        fields = ['status', 'executor', 'labels', 'own_task']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.filters['executor'].field.label_from_instance = (
+            lambda obj: obj.get_full_name()
+        )

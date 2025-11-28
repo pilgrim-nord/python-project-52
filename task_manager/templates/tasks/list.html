@@ -9,57 +9,118 @@
         <a href="{% url 'tasks:create' %}" class="btn btn-primary mt-2">{% trans "Создать задачу" %}</a>
     {% endif %}
 
-    <div class="card mt-4">
-        <div class="card-body bg-light">
+    <!-- Форма фильтрации -->
+    <div class="card bg-light mt-4">
+        <div class="card-body">
             <form method="GET" action="{% url 'tasks:list' %}">
+                {% csrf_token %}
                 <div class="row g-3">
-                    <div class="col-12">
-                        <label for="status" class="form-label">{% trans "Статус" %}</label>
-                        <select name="status" id="status" class="form-select">
-                            <option value="">{% trans "---------" %}</option>
-                            {% for status in statuses %}
-                                <option value="{{ status.id }}" {% if status.id|stringformat:"s" == status_filter %}selected{% endif %}>
-                                    {{ status.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                    <!-- Фильтр по статусу -->
+                    <div class="col-12 mb-3">
+                        <label for="status_filter" class="form-label">{% trans "Статус" %}</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle form-control text-start" type="button" 
+                                    data-bs-toggle="dropdown">
+                                {% if status_filter %}
+                                    {% for status in statuses %}
+                                        {% if status.id|stringformat:"s" == status_filter %}
+                                            {{ status.name }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% trans "-------" %}
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                <li><a class="dropdown-item" href="?{% if executor_filter %}executor={{ executor_filter }}&{% endif %}{% if label_filter %}label={{ label_filter }}&{% endif %}{% if is_self_tasks %}own_task=on{% endif %}">
+                                    {% trans "Все" %}
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% for status in statuses %}
+                                    <li><a class="dropdown-item {% if status.id|stringformat:"s" == status_filter %}active{% endif %}" 
+                                           href="?status={{ status.id }}{% if executor_filter %}&executor={{ executor_filter }}{% endif %}{% if label_filter %}&label={{ label_filter }}{% endif %}{% if is_self_tasks %}&own_task=on{% endif %}">
+                                        {{ status.name }}
+                                    </a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
 
-                    <div class="col-12">
-                        <label for="executor" class="form-label">{% trans "Исполнитель" %}</label>
-                        <select name="executor" id="executor" class="form-select">
-                            <option value="">{% trans "---------" %}</option>
-                            {% for executor in executors %}
-                                <option value="{{ executor.id }}" {% if executor.id|stringformat:"s" == executor_filter %}selected{% endif %}>
-                                    {{ executor.username }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                    <!-- Фильтр по исполнителю -->
+                    <div class="col-12 mb-3">
+                        <label for="executor_filter" class="form-label">{% trans "Исполнитель" %}</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle form-control text-start" type="button" 
+                                    data-bs-toggle="dropdown">
+                                {% if executor_filter %}
+                                    {% for executor in executors %}
+                                        {% if executor.id|stringformat:"s" == executor_filter %}
+                                            {{ executor.get_full_name|default:executor.username }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% trans "---------" %}
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                <li><a class="dropdown-item" href="?{% if status_filter %}status={{ status_filter }}&{% endif %}{% if label_filter %}label={{ label_filter }}&{% endif %}{% if is_self_tasks %}own_task=on{% endif %}">
+                                    {% trans "Все" %}
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% for executor in executors %}
+                                    <li><a class="dropdown-item {% if executor.id|stringformat:"s" == executor_filter %}active{% endif %}" 
+                                           href="?executor={{ executor.id }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if label_filter %}&label={{ label_filter }}{% endif %}{% if is_self_tasks %}&own_task=on{% endif %}">
+                                        {{ executor.get_full_name|default:executor.username }}
+                                    </a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
 
-                    <div class="col-12">
-                        <label for="label" class="form-label">{% trans "Метка" %}</label>
-                        <select name="label" id="label" class="form-select">
-                            <option value="">{% trans "---------" %}</option>
-                            {% for label in labels %}
-                                <option value="{{ label.id }}" {% if label.id|stringformat:"s" == label_filter %}selected{% endif %}>
-                                    {{ label.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
+                    <!-- Фильтр по меткам -->
+                    <div class="col-12 mb-3">
+                        <label for="label_filter" class="form-label">{% trans "Метки" %}</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle form-control text-start" type="button" 
+                                    data-bs-toggle="dropdown">
+                                {% if label_filter %}
+                                    {% for label in labels %}
+                                        {% if label.id|stringformat:"s" == label_filter %}
+                                            {{ label.name }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% trans "---------" %}
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                <li><a class="dropdown-item" href="?{% if status_filter %}status={{ status_filter }}&{% endif %}{% if executor_filter %}executor={{ executor_filter }}&{% endif %}{% if is_self_tasks %}own_task=on{% endif %}">
+                                    {% trans "Все" %}
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% for label in labels %}
+                                    <li><a class="dropdown-item {% if label.id|stringformat:"s" == label_filter %}active{% endif %}" 
+                                           href="?label={{ label.id }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if executor_filter %}&executor={{ executor_filter }}{% endif %}{% if is_self_tasks %}&own_task=on{% endif %}">
+                                        {{ label.name }}
+                                    </a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
 
-                    <div class="col-12">
+                    <!-- Чекбокс "Только свои задачи" -->
+                    <div class="col-12 mb-3">
                         <div class="form-check">
-                            <input name="self_tasks" class="form-check-input" type="checkbox" id="self_tasks" {% if is_self_tasks %}checked{% endif %}>
-                            <label class="form-check-label" for="self_tasks">
+                            <input name="own_task" class="form-check-input" type="checkbox" id="own_task" {% if is_self_tasks %}checked{% endif %}>
+                            <label class="form-check-label" for="own_task">
                                 {% trans "Только свои задачи" %}
                             </label>
                         </div>
                     </div>
 
+                    <!-- Кнопка "Показать" -->
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary mt-2">{% trans "Показать" %}</button>
+                        <button type="submit" class="btn btn-primary">{% trans "Показать" %}</button>
                     </div>
                 </div>
             </form>

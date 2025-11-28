@@ -2,6 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django_filters.views import FilterView
+
+from .filters import TaskFilter
 from .models import Task
 from .forms import TaskForm
 from task_manager.statuses.models import Status
@@ -9,47 +12,67 @@ from task_manager.labels.models import Label
 from django.contrib.auth.models import User
 
 
-class TaskListView(ListView):
+# class TaskListView(ListView):
+#     model = Task
+#     template_name = 'tasks/list.html'
+#     context_object_name = 'tasks'
+#     paginate_by = 10
+#
+#     # НОВЫЙ МЕТОД: Фильтрация queryset'а
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#
+#         status_id = self.request.GET.get('status')
+#         if status_id:
+#             queryset = queryset.filter(status_id=status_id)
+#
+#         executor_id = self.request.GET.get('executor')
+#         if executor_id:
+#             queryset = queryset.filter(executor_id=executor_id)
+#
+#         label_id = self.request.GET.get('label')
+#         if label_id:
+#             queryset = queryset.filter(labels__id=label_id)
+#
+#         if self.request.GET.get('self_tasks') == 'on':
+#             queryset = queryset.filter(author=self.request.user)
+#
+#         return queryset.distinct()
+#
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#
+#         context['status_filter'] = self.request.GET.get('status', '')
+#         context['executor_filter'] = self.request.GET.get('executor', '')
+#         context['label_filter'] = self.request.GET.get('label', '')
+#         context['is_self_tasks'] = self.request.GET.get('self_tasks') == 'on'
+#
+#         context['statuses'] = Status.objects.all()
+#         context['executors'] = User.objects.all()
+#         context['labels'] = Label.objects.all()
+#
+#         return context
+class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
     template_name = 'tasks/list.html'
     context_object_name = 'tasks'
-    paginate_by = 10
-
-    # НОВЫЙ МЕТОД: Фильтрация queryset'а
-    def get_queryset(self):
-        queryset = super().get_queryset()
-
-        status_id = self.request.GET.get('status')
-        if status_id:
-            queryset = queryset.filter(status_id=status_id)
-
-        executor_id = self.request.GET.get('executor')
-        if executor_id:
-            queryset = queryset.filter(executor_id=executor_id)
-
-        label_id = self.request.GET.get('label')
-        if label_id:
-            queryset = queryset.filter(labels__id=label_id)
-
-        if self.request.GET.get('self_tasks') == 'on':
-            queryset = queryset.filter(author=self.request.user)
-
-        return queryset.distinct()
-
+    filterset_class = TaskFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        context['status_filter'] = self.request.GET.get('status', '')
-        context['executor_filter'] = self.request.GET.get('executor', '')
-        context['label_filter'] = self.request.GET.get('label', '')
-        context['is_self_tasks'] = self.request.GET.get('self_tasks') == 'on'
-
         context['statuses'] = Status.objects.all()
         context['executors'] = User.objects.all()
         context['labels'] = Label.objects.all()
-
+        
+        # Передача выбранных значений фильтров
+        context['status_filter'] = self.request.GET.get('status', '')
+        context['executor_filter'] = self.request.GET.get('executor', '')
+        context['label_filter'] = self.request.GET.get('label', '')
+        context['is_self_tasks'] = self.request.GET.get('own_task') == 'on'
+        
         return context
+
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task

@@ -13,6 +13,8 @@ dependencies = [
   "rollbar>=1.0",
   "gunicorn>=22.0",
   "dj-database-url>=2.1 ; sys_platform != 'emscripten'",
+  "beautifulsoup4>=4.14.2",
+  "requests>=2.32.5",
 ]
 
 [dependency-groups]
