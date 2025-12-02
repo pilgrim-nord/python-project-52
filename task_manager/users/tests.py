@@ -167,8 +167,9 @@ class UserCRUDTestCase(TestCase):
         
         # Проверяем, что в сообщениях есть правильный текст ошибки
         messages = list(response.wsgi_request._messages)
-        error_message_found = any('У вас нет прав для изменения другого \ '
-                    'пользователя' in str(message) for message in messages)
+        error_message_found = any(
+            'У вас нет прав для изменения другого пользователя'
+            in str(message) for message in messages)
         self.assertTrue(error_message_found, "Сообщение об ошибке не найдено")
         
         # Проверяем, что пользователь не удален
