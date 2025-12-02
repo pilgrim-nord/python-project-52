@@ -20,13 +20,6 @@ class TaskFilter(django_filters.FilterSet):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    # labels = django_filters.ModelMultipleChoiceFilter(
-    #     queryset=Label.objects.all(),
-    #     label="Метка",
-    #     widget=forms.SelectMultiple(attrs={'class': 'form-select'}),
-    #     method='labels_filter'
-    # )
-
     labels = django_filters.ModelChoiceFilter(
         queryset=Label.objects.all(),
         label="Метка",
