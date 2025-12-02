@@ -10,6 +10,7 @@ from .forms import UserRegistrationForm, UserUpdateForm
 
 
 LOGIN_REQUIRED_MESSAGE = "Вы не авторизованы. Пожалуйста, выполните вход."
+USERS_LIST_URL = 'users:list'
 
 
 class AuthRequiredMixin(LoginRequiredMixin):
@@ -54,7 +55,7 @@ class UserUpdateView(AuthRequiredMixin, UpdateView):
     model = User
     form_class = UserUpdateForm
     template_name = 'users/form.html'
-    success_url = reverse_lazy('users:list')
+    success_url = reverse_lazy(USERS_LIST_URL)
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -69,7 +70,7 @@ class UserUpdateView(AuthRequiredMixin, UpdateView):
                 request,
                 "У вас нет прав для изменения другого пользователя."
             )
-            return redirect('users:list')
+            return redirect(USERS_LIST_URL)
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -81,7 +82,7 @@ class UserUpdateView(AuthRequiredMixin, UpdateView):
 class UserDeleteView(AuthRequiredMixin, DeleteView):
     model = User
     template_name = 'users/delete.html'
-    success_url = reverse_lazy('users:list')
+    success_url = reverse_lazy(USERS_LIST_URL)
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -99,7 +100,7 @@ class UserDeleteView(AuthRequiredMixin, DeleteView):
                 request,
                 "У вас нет прав для изменения другого пользователя."
             )
-            return redirect('users:list')
+            return redirect(USERS_LIST_URL)
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -119,9 +120,9 @@ class UserDeleteView(AuthRequiredMixin, DeleteView):
                 request,
                 "Невозможно удалить пользователя, потому что он используется"
             )
-            return redirect('users:list')
+            return redirect(USERS_LIST_URL)
 
         logout(self.request)
         super().post(request, *args, **kwargs)
         messages.success(request, "Пользователь успешно удален")
-        return redirect('users:list')
+        return redirect(USERS_LIST_URL)
