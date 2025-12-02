@@ -16,7 +16,6 @@ from task_manager.statuses.models import Status
 from .forms import TaskForm
 from .models import Task
 
-
 TASK_LIST_URL = 'tasks:list'
 
 

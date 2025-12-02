@@ -8,7 +8,6 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from .forms import UserRegistrationForm, UserUpdateForm
 
-
 LOGIN_REQUIRED_MESSAGE = "Вы не авторизованы. Пожалуйста, выполните вход."
 USERS_LIST_URL = 'users:list'
 

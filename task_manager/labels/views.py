@@ -9,7 +9,6 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from .forms import LabelForm
 from .models import Label
 
-
 LABELS_LIST_URL = 'labels:list'
 
 
