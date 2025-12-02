@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="container my-4">
-    <h1 class="my-4">{% trans "Подтвердить удаление" %}</h1>
-    <p>{% trans "Вы уверены, что хотите удалить статус" %} <strong>{{ object.name }}</strong>?</p>
+    <h1 class="my-4">{% trans "Удаление статуса" %}</h1>
+    <p>{% trans "Вы уверены, что хотите удалить " %} <strong>{{ object.name }}</strong>?</p>
 
     <form action="{% url 'statuses:delete' object.pk %}" method="post">
         {% csrf_token %}
