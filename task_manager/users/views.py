@@ -9,11 +9,14 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 from .forms import UserRegistrationForm, UserUpdateForm
 
 
+LOGIN_REQUIRED_MESSAGE = "Вы не авторизованы. Пожалуйста, выполните вход."
+
+
 class AuthRequiredMixin(LoginRequiredMixin):
     def handle_no_permission(self):
         messages.error(
             self.request,
-            "Вы не авторизованы. Пожалуйста, выполните вход."
+            LOGIN_REQUIRED_MESSAGE
         )
         return redirect('login')
 
@@ -57,7 +60,7 @@ class UserUpdateView(AuthRequiredMixin, UpdateView):
         if not request.user.is_authenticated:
             messages.error(
                 request,
-                "Вы не авторизованы. Пожалуйста, выполните вход."
+                LOGIN_REQUIRED_MESSAGE
             )
             return redirect('login')
 
@@ -84,7 +87,7 @@ class UserDeleteView(AuthRequiredMixin, DeleteView):
         if not request.user.is_authenticated:
             messages.error(
                 request,
-                "Вы не авторизованы. Пожалуйста, выполните вход."
+                LOGIN_REQUIRED_MESSAGE
             )
             return redirect('login')
 

@@ -17,6 +17,9 @@ from .forms import TaskForm
 from .models import Task
 
 
+TASK_LIST_URL = 'tasks:list'
+
+
 class TaskListView(ListView):
     model = Task
     template_name = 'tasks/list.html'
@@ -74,7 +77,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/create.html'
-    success_url = reverse_lazy('tasks:list')
+    success_url = reverse_lazy(TASK_LIST_URL)
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -86,7 +89,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
     template_name = 'tasks/update.html'
-    success_url = reverse_lazy('tasks:list')
+    success_url = reverse_lazy(TASK_LIST_URL)
 
     def form_valid(self, form):
         messages.success(self.request, "Задача успешно изменена")
@@ -96,7 +99,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Task
     template_name = 'tasks/delete.html'
-    success_url = reverse_lazy('tasks:list')
+    success_url = reverse_lazy(TASK_LIST_URL)
 
     def test_func(self):
         task = self.get_object()
@@ -111,7 +114,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             "Задачу может удалить только ее автор"
         )
         # Перенаправляем на список задач вместо поднятия исключения
-        return HttpResponseRedirect(reverse_lazy('tasks:list'))
+        return HttpResponseRedirect(reverse_lazy(TASK_LIST_URL))
     
     def form_valid(self, form):
         messages.success(self.request, "Задача успешно удалена")

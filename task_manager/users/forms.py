@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 USERNAME_FIELD = 'username'
 PASS1 = 'password1'
 PASS2 = 'password2'
+REQUIRED_FIELD_MESSAGE = 'Обязательное поле.'
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -14,13 +15,13 @@ class UserRegistrationForm(UserCreationForm):
         required=True,
         label='Имя',
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        error_messages={'required': 'Обязательное поле.'}
+        error_messages={'required': REQUIRED_FIELD_MESSAGE}
     )
     last_name = forms.CharField(
         required=True,
         label='Фамилия',
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        error_messages={'required': 'Обязательное поле.'}
+        error_messages={'required': REQUIRED_FIELD_MESSAGE}
     )
 
     class Meta:
@@ -38,12 +39,12 @@ class UserRegistrationForm(UserCreationForm):
         }
         error_messages = {
             USERNAME_FIELD: {
-                'required': 'Обязательное поле.',
+                'required': REQUIRED_FIELD_MESSAGE,
                 'unique': 'Пользователь с таким именем уже существует.',
                 'max_length': 'Не более 150 символов.',
             },
-            PASS1: {'required': 'Обязательное поле.'},
-            PASS2: {'required': 'Обязательное поле.'},
+            PASS1: {'required': REQUIRED_FIELD_MESSAGE},
+            PASS2: {'required': REQUIRED_FIELD_MESSAGE},
         }
         # УБРАЛИ widgets отсюда — они больше не нужны
         # widgets = { ... }  ← удалить весь блок!
