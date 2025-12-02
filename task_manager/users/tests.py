@@ -103,7 +103,7 @@ class UserCRUDTestCase(TestCase):
         # Без авторизации должен быть редирект на список пользователей
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('users:list'))
+        self.assertRedirects(response, reverse('login'))
 
     def test_update_other_user_forbidden(self):
         """Тест, что нельзя обновить другого пользователя"""
@@ -117,7 +117,7 @@ class UserCRUDTestCase(TestCase):
         # Должен быть редирект на список пользователей
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('login'))
+        self.assertRedirects(response, reverse('users:list'))
 
     def test_delete_user(self):
         """Тест удаления пользователя"""

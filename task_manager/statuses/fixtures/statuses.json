@@ -3,7 +3,7 @@
     "model": "statuses.status",
     "pk": 1,
     "fields": {
-      "name": "first status name",
+      "name": "новый",
       "created_at": "2024-01-01T00:00:00Z"
     }
   },
@@ -11,7 +11,7 @@
     "model": "statuses.status",
     "pk": 2,
     "fields": {
-      "name": "second status name",
+      "name": "в работе",
       "created_at": "2024-01-02T00:00:00Z"
     }
   },
