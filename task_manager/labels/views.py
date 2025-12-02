@@ -10,6 +10,9 @@ from .forms import LabelForm
 from .models import Label
 
 
+LABELS_LIST_URL = 'labels:list'
+
+
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
     template_name = 'labels/list.html'
@@ -20,7 +23,7 @@ class LabelCreateView(LoginRequiredMixin, CreateView):
     model = Label
     form_class = LabelForm
     template_name = 'labels/form.html'
-    success_url = reverse_lazy('labels:list')
+    success_url = reverse_lazy(LABELS_LIST_URL)
 
     def form_valid(self, form):
         messages.success(self.request, 'Метка успешно создана')
@@ -31,7 +34,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
     model = Label
     form_class = LabelForm
     template_name = 'labels/form.html'
-    success_url = reverse_lazy('labels:list')
+    success_url = reverse_lazy(LABELS_LIST_URL)
 
     def form_valid(self, form):
         messages.success(self.request, 'Метка успешно изменена')
@@ -41,7 +44,7 @@ class LabelUpdateView(LoginRequiredMixin, UpdateView):
 class LabelDeleteView(LoginRequiredMixin, DeleteView):
     model = Label
     template_name = 'labels/delete.html'
-    success_url = reverse_lazy('labels:list')
+    success_url = reverse_lazy(LABELS_LIST_URL)
 
     def form_valid(self, form):
         # Проверяем, связана ли метка с задачами

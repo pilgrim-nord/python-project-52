@@ -8,6 +8,7 @@ USERNAME_FIELD = 'username'
 PASS1 = 'password1'
 PASS2 = 'password2'
 REQUIRED_FIELD_MESSAGE = 'Обязательное поле.'
+PASSWORD_LABEL = 'Пароль'
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -29,7 +30,7 @@ class UserRegistrationForm(UserCreationForm):
         fields = ("first_name", "last_name", USERNAME_FIELD, PASS1, PASS2)
         labels = {
             USERNAME_FIELD: 'Имя пользователя',
-            PASS1: 'Пароль',
+            PASS1: PASSWORD_LABEL,
             PASS2: 'Подтверждение пароля',
         }
         help_texts = {
@@ -85,9 +86,9 @@ class UserRegistrationForm(UserCreationForm):
 
 class UserUpdateForm(forms.ModelForm):
     password1 = forms.CharField(
-        label='Пароль',
+        label=PASSWORD_LABEL,
         widget=forms.PasswordInput(attrs={
-            'placeholder': 'Пароль',
+            'placeholder': PASSWORD_LABEL,
             'autocomplete': 'new-password'
         }),
         required=False,
