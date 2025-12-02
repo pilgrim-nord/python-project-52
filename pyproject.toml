@@ -31,3 +31,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["task_manager"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "task_manager.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "-ra -q --cov=. --cov-report=term-missing"
+testpaths = "."
