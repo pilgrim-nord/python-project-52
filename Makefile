@@ -13,5 +13,8 @@ migrate:
 collectstatic:
 	python manage.py collectstatic --noinput
 
-lint:
+check:
 	uv run ruff check task_manager
+
+test-coverage:
+	uv run pytest --cov=task_manager --cov-report=xml

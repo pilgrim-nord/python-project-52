@@ -13,7 +13,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install dependencies
+        run: |
+          pip install uv
+          make install
+      - name: Run linter and pytest
+        run: |
+          make check
+      - name: Run test with coverage
+        run: |
+          make test-coverage
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=pilgrim-nord_python-project-52
+            -Dsonar.organization=pilgrim-nord-1
+            -Dsonar.python.coverage.reportPaths=coverage.xml
