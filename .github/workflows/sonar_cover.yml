@@ -18,7 +18,7 @@ jobs:
           pip install uv
           make install
       - name: Run pytest
-        uv run pytest
+          uv run pytest
       - name: Run test with coverage
         run: |
           make test-coverage
