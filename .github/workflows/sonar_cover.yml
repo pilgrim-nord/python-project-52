@@ -1,34 +1,43 @@
-name: SonarQube Analysis
+name: CI + SonarCloud
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [ main ]
+
 jobs:
-  sonarqube:
-    name: SonarQube
-    runs-on: macos-latest
+  test:
+    runs-on: ubuntu-latest        # ← НЕ macos! Быстрее и дешевле
+
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
+
+      - name: Set up Python + uv
+        uses: astral-sh/setup-uv@v3
+
       - name: Install dependencies
         run: |
-          pip install uv
-          make install
-      - name: Run pytest
-        run: |
-          uv run pytest
-      - name: Run test with coverage
-        run: |
-          make test-coverage
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+          make install   # или: uv sync --all-extras --dev
+
+      - name: Run tests with coverage
         env:
+          DJANGO_SECRET_KEY: "insecure-ci-key-do-not-use-in-production-1234567890abc"
+          DJANGO_SETTINGS_MODULE: task_manager.settings
+        run: |
+          uv run pytest --cov=task_manager --cov-report=xml:coverage.xml --junitxml=junit.xml
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master   # ← правильный экшен!
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.projectKey=pilgrim-nord_python-project-52
             -Dsonar.organization=pilgrim-nord-1
             -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.sources=.
+            -Dsonar.python.version=3.13
