@@ -23,12 +23,10 @@ jobs:
           make install   # или: uv sync --all-extras --dev
 
       - name: Run tests with coverage
-        env:
-          DJANGO_SECRET_KEY: "insecure-ci-key-do-not-use-in-production-1234567890abc"
-          DJANGO_SETTINGS_MODULE: task_manager.settings
-        run: |
-          uv run pytest --cov=task_manager --cov-report=xml:coverage.xml --junitxml=junit.xml
-
+          env:
+            SECRET_KEY: "django-insecure-for-ci-only-1234567890abcdef"   # ← вот так!
+          run: |
+            uv run pytest --cov=task_manager --cov-report=xml:coverage.xml --junitxml=junit.xml
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master   # ← правильный экшен!
         env:
