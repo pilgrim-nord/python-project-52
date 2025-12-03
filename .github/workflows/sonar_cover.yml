@@ -8,8 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest        # ← НЕ macos! Быстрее и дешевле
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,20 +19,27 @@ jobs:
 
       - name: Install dependencies
         run: |
-          make install   # или: uv sync --all-extras --dev
+          make install
+          # если make install вдруг не сработает — раскомментируй строку ниже:
+          # uv sync --all-extras --dev
 
       - name: Run tests with coverage
-          env:
-            SECRET_KEY: "django-insecure-for-ci-only-1234567890abcdef"   # ← вот так!
-          run: |
-            uv run pytest --cov=task_manager --cov-report=xml:coverage.xml --junitxml=junit.xml
+        env:
+          SECRET_KEY: django-insecure-for-ci-only-1234567890abcdef
+        run: |
+          uv run pytest \
+            --cov=task_manager \
+            --cov-report=xml:coverage.xml \
+            --cov-report=term-missing \
+            --junitxml=junit.xml
+
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master   # ← правильный экшен!
+        uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          args: >
+          args: >-
             -Dsonar.projectKey=pilgrim-nord_python-project-52
             -Dsonar.organization=pilgrim-nord-1
             -Dsonar.python.coverage.reportPaths=coverage.xml
